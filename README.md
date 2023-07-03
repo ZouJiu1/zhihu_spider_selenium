@@ -65,19 +65,19 @@ pip install -r .\requirement.txt</code><br>
 `
 python.exe crawler.py --think
 `
-<br>
+
 **爬取知乎回答**
 默认的爬取每篇回答的睡眠时间是**16s**以上，这边实际爬取耗时平均是每篇 **30s**，每个图片需要6s
 `
 python.exe crawler.py --answer
 `
-<br>
+
 **爬取知乎的article**
 默认的爬取每篇article的睡眠时间是**16s**以上，这边实际爬取130多篇，耗时平均是每篇 **33.096s**，每个图片需要6s
 `
 python.exe crawler.py --article
 `
-<br>
+
 ### 3、三项一起爬取的
 `
 python.exe crawler.py --think --article --answer
