@@ -1,0 +1,129 @@
+https://zhuanlan.zhihu.com/p/639496034 离职了的相关的内容
+https://zhuanlan.zhihu.com/p/639472641 在vscode配置c\c++的运行环境
+https://zhuanlan.zhihu.com/p/637998572 泊松分布的现实意义以及现实生活多数服从于泊松分布
+https://zhuanlan.zhihu.com/p/637671529 202306接下来的安排--持续修改的
+https://zhuanlan.zhihu.com/p/637106685 202306接下来的安排
+https://zhuanlan.zhihu.com/p/634139052 MacBook pro苹果日历关闭日历邀请通知
+https://zhuanlan.zhihu.com/p/632935147 不支持龙字的
+https://zhuanlan.zhihu.com/p/631423290 有关实现类人的(zeroshut)图像CV和无人自动驾驶的猜想
+https://zhuanlan.zhihu.com/p/629377301 不支持不反对和“qiang”同音的个人
+https://zhuanlan.zhihu.com/p/627580809 劳动合同和租房合同以及考研结婚
+https://zhuanlan.zhihu.com/p/626840224 租房和工作相关
+https://zhuanlan.zhihu.com/p/626488150 上午清醒大脑，毕业时的钱数
+https://zhuanlan.zhihu.com/p/626192166 不支持名字带“终、钟”等人物
+https://zhuanlan.zhihu.com/p/626093765 捐赠记录的内容
+https://zhuanlan.zhihu.com/p/622433720 泰勒公式推导方式二
+https://zhuanlan.zhihu.com/p/622361192 泰勒公式使用积分来推导
+https://zhuanlan.zhihu.com/p/622362524 猜想外公的死因，没有证据不敢妄下结论
+https://zhuanlan.zhihu.com/p/622292476 win10自带photo软件协议变更，你的照片传到国外了
+https://zhuanlan.zhihu.com/p/620477014 对婚姻对游戏对联邦制感想-合久必分-分久必合
+https://zhuanlan.zhihu.com/p/618830957 畅想AI具有意识的情景
+https://zhuanlan.zhihu.com/p/618832497 话说又做噩meng了
+https://zhuanlan.zhihu.com/p/618827019 GPT-4自己对意识的回答
+https://zhuanlan.zhihu.com/p/618822682 热带以及适宜温度和睡眠的关系（续）
+https://zhuanlan.zhihu.com/p/617062052 让AI或者GPT具有人类的意识甚至beyond变到AGI
+https://zhuanlan.zhihu.com/p/615883280 GPT是否具有意识，或者意识是什么，第2篇
+https://zhuanlan.zhihu.com/p/615264368 GPT是否具有意识，或者意识是什么？
+https://zhuanlan.zhihu.com/p/615199543 梦到朝思暮想的女网友了的
+https://zhuanlan.zhihu.com/p/615199511 placeholder
+https://zhuanlan.zhihu.com/p/615191793 使用GPT api的cursor编辑器使用体验
+https://zhuanlan.zhihu.com/p/613299780 PAT甲级 2023年spring考试 Tree of Love
+https://zhuanlan.zhihu.com/p/613299497 PAT甲级 2023年spring考试 K Vertex
+https://zhuanlan.zhihu.com/p/613299244 PAT甲级 2023年spring考试 LRU-K
+https://zhuanlan.zhihu.com/p/613298476 PAT甲级 2023年spring考试 The Winner over Squares and Primes
+https://zhuanlan.zhihu.com/p/605712326 梦游以及相关
+https://zhuanlan.zhihu.com/p/611525973 工作以外的空闲时间的安排
+https://zhuanlan.zhihu.com/p/609292129 屏蔽网站、网页和弹窗，禁止卸载软件的方法
+https://zhuanlan.zhihu.com/p/605710105 c++ set运算符重载
+https://zhuanlan.zhihu.com/p/605686452 PAT甲级 2022年夏季考试 多叉树遍历 Complete D-Tree
+https://zhuanlan.zhihu.com/p/605651911 PAT甲级 2021年秋季考试 Sorted Cartesian Tree
+https://zhuanlan.zhihu.com/p/605651421 PAT甲级 2021年秋季考试 7-3 Playground Exploration
+https://zhuanlan.zhihu.com/p/605650844 PAT甲级 2021年秋季考试 7-2 Stack of Hats
+https://zhuanlan.zhihu.com/p/605649299 PAT甲级 2021年秋季考试 7-1 Arrays and Linked Lists
+https://zhuanlan.zhihu.com/p/605510904 PAT甲级 2022年夏季考试 7-3 DFS Sequence
+https://zhuanlan.zhihu.com/p/605502720 PAT甲级 2022年夏季考试 7-2 Least Recently Used Cache
+https://zhuanlan.zhihu.com/p/605484723 PAT甲级 2022年夏季考试 7-1 What Day is Today
+https://zhuanlan.zhihu.com/p/603701036 PAT甲级 1021 Deepest Root
+https://zhuanlan.zhihu.com/p/603654338 PAT甲级 1171 Replacement Selection
+https://zhuanlan.zhihu.com/p/603653512 PAT甲级 1170 Safari Park
+https://zhuanlan.zhihu.com/p/603652419 PAT甲级 1169 The Judger
+https://zhuanlan.zhihu.com/p/603652114 PAT甲级 1168 Prime Day
+https://zhuanlan.zhihu.com/p/601364054 PAT甲级2022年冬季考试 25 A-3 Articulation Points
+https://zhuanlan.zhihu.com/p/601364822 PAT甲级2022年冬季考试 30 A-4 Check Inorder Traversals
+https://zhuanlan.zhihu.com/p/601362617 PAT甲级2022年冬季考试 25 A-2 Luggage Pickup
+https://zhuanlan.zhihu.com/p/601361794 PAT甲级2022年冬季考试 A-1 Reduction of Proper Fractions
+https://zhuanlan.zhihu.com/p/601354968 PAT甲级 2022年秋季考试 7-2 The Second Run of Quicksort
+https://zhuanlan.zhihu.com/p/601356155 PAT甲级 2022年秋季考试 7-3 Leader of the Opinion Leaders
+https://zhuanlan.zhihu.com/p/601356106 PAT甲级 2022年秋季考试 Pseudo-completeness
+https://zhuanlan.zhihu.com/p/601352734 PAT甲级 2022年秋季考试 7-1 Balloon Popping
+https://zhuanlan.zhihu.com/p/600992950 PAT二叉搜索树题解
+https://zhuanlan.zhihu.com/p/600912228 归并排序使用sort介绍
+https://zhuanlan.zhihu.com/p/600911764 归并排序介绍
+https://zhuanlan.zhihu.com/p/600710318 二叉树前序后序中序遍历
+https://zhuanlan.zhihu.com/p/600709880 二叉树已知前序后序输出中序
+https://zhuanlan.zhihu.com/p/600709767 二叉树已知后序中序输出前序
+https://zhuanlan.zhihu.com/p/600709468 二叉树已知前序中序输出后序
+https://zhuanlan.zhihu.com/p/600395112 小国和大国以及联邦制
+https://zhuanlan.zhihu.com/p/600394903 热带以及适宜温度和睡眠的关系
+https://zhuanlan.zhihu.com/p/594174480 股藓和体藓治疗经历经验
+https://zhuanlan.zhihu.com/p/594173174 流口水疾病或者口水强迫9年以后，症状得到缓解的经验
+https://zhuanlan.zhihu.com/p/585817114 关于工作的时间内容
+https://zhuanlan.zhihu.com/p/585181107 搬家了以及的669
+https://zhuanlan.zhihu.com/p/584956617 道歉的信息内容
+https://zhuanlan.zhihu.com/p/581794191 搬家时间和工作相关
+https://zhuanlan.zhihu.com/p/578609938 减轻了本人口水病的好消息
+https://zhuanlan.zhihu.com/p/565449949 堆排序快速排序插入排序
+https://zhuanlan.zhihu.com/p/565466368 是否说谎以及耳钉以及献血
+https://zhuanlan.zhihu.com/p/561096934 卷积和转置卷积矩阵计算 convolution和deconvolution或者transposed_convolution
+https://zhuanlan.zhihu.com/p/558559859 关于捐钱的事情
+https://zhuanlan.zhihu.com/p/558559647 睡眠和租房世俗~生日的时间么
+https://zhuanlan.zhihu.com/p/558558477 之前量子纠缠的可能解释
+https://zhuanlan.zhihu.com/p/550431676 某些chao纲的不在知识范围内的题目
+https://zhuanlan.zhihu.com/p/550431544 记住的名字都是化名的
+https://zhuanlan.zhihu.com/p/546243205 关于量子纠缠的猜想
+https://zhuanlan.zhihu.com/p/535080506 关于人情世故
+https://zhuanlan.zhihu.com/p/528594528 工作事情的
+https://zhuanlan.zhihu.com/p/528389745 昨晚做了个梦
+https://zhuanlan.zhihu.com/p/518037031 这些话我收回，当未说过就好
+https://zhuanlan.zhihu.com/p/508142962 工作和考研以及空闲时间的使用
+https://zhuanlan.zhihu.com/p/503029571 租房
+https://zhuanlan.zhihu.com/p/493144899 待写
+https://zhuanlan.zhihu.com/p/493144572 些矛盾的事情
+https://zhuanlan.zhihu.com/p/493134790 又是一年清明节
+https://zhuanlan.zhihu.com/p/481859074 这些岁月里梦见过的人
+https://zhuanlan.zhihu.com/p/482492547 关于居家办公
+https://zhuanlan.zhihu.com/p/481022563 神经网络反向传播推导
+https://zhuanlan.zhihu.com/p/480401983 2022年前毕业以后部外卖飞机航班，找工作住过些的旅舍和酒店，还有些未记录在这里
+https://zhuanlan.zhihu.com/p/476246708 检测网络里的各式各样的非极大值抑制Non-Maximum Suppression
+https://zhuanlan.zhihu.com/p/469367684 想来可以娶的呢
+https://zhuanlan.zhihu.com/p/465077072 X光机违禁品检测相应内容
+https://zhuanlan.zhihu.com/p/465069823 gcc O3和O0编译的输出浮点数不相同
+https://zhuanlan.zhihu.com/p/464719838 工作相关的内容
+https://zhuanlan.zhihu.com/p/463636906 旋转矩阵的推导方式
+https://zhuanlan.zhihu.com/p/462575737 胎盘肉以及狗
+https://zhuanlan.zhihu.com/p/462565370 凯克罢工资相关
+https://zhuanlan.zhihu.com/p/462563474 锐克傍工作期间的工资和合同情况
+https://zhuanlan.zhihu.com/p/462564991 塑壳职能公司工资相关
+https://zhuanlan.zhihu.com/p/455690270 2021-2022.01些许工作的事情
+https://zhuanlan.zhihu.com/p/454805905 github部分解决图片打不开加载慢
+https://zhuanlan.zhihu.com/p/454804851 github常用的命令行
+https://zhuanlan.zhihu.com/p/454792356 armneon Intrinsics记录
+https://zhuanlan.zhihu.com/p/454790711 armneon简介
+https://zhuanlan.zhihu.com/p/454786633 armneon文档相关内容
+https://zhuanlan.zhihu.com/p/450114191 公司工作的事情
+https://zhuanlan.zhihu.com/p/449822471 目标检测里的mAP计算过程和原理
+https://zhuanlan.zhihu.com/p/443848756 2014~2019备忘录
+https://zhuanlan.zhihu.com/p/443847507 晚上能不能吃饭的线
+https://zhuanlan.zhihu.com/p/435770804 劝走的人还是别劝了
+https://zhuanlan.zhihu.com/p/435014113 关于吃和工作
+https://zhuanlan.zhihu.com/p/435012733 人生
+https://zhuanlan.zhihu.com/p/435003943 来上海的原因
+https://zhuanlan.zhihu.com/p/434981002 上海的些微事情
+https://zhuanlan.zhihu.com/p/430298515 工作和租房信息
+https://zhuanlan.zhihu.com/p/430298140 关于空闲时间看书和工作的关系
+https://zhuanlan.zhihu.com/p/430291523 些许事情记录
+https://zhuanlan.zhihu.com/p/415908305 记第一次送外卖
+https://zhuanlan.zhihu.com/p/415715888 自信的来源
+https://zhuanlan.zhihu.com/p/414334167 我的还钱记录
+https://zhuanlan.zhihu.com/p/413979975 关于副业的想法
+https://zhuanlan.zhihu.com/p/413274323 对城市的好感源于女朋友
