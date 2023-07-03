@@ -39,7 +39,7 @@
 <img src="./showimg/answer3.png" width="39%"/><img src="./showimg/answer4.png" width="39%"/><br>
 
 ## 环境以及安装
-**win10** **python**
+**win10** **python** <br>
 1、点击下面这个网页，安装miniconda也就是安装python，下载好以后安装即可，在安装时需要加入到系统环境变量，勾选下图第二个框即可。 <br>[https://mirrors.tuna.tsinghua.edu.cn/anaconda/miniconda/Miniconda3-py310_23.3.1-0-Windows-x86_64.exe](https://mirrors.tuna.tsinghua.edu.cn/anaconda/miniconda/Miniconda3-py310_23.3.1-0-Windows-x86_64.exe)<br>
  <img src="./showimg/miniconda.png" width="60%"/><br>
 2、接着需要修改python安装的路径，将msedgedriver\\.condarc这个档案放到根目录`C:\Users\username`即可，另外再打开一个cmd或者PowerShell<br>
