@@ -1,5 +1,5 @@
 # 爬取知乎的内容
-考虑到将写的内容爬取下来，保存起来的避免误删，算是个备份的，而且方便查找，阅读起来也更方便，使用起来也好很多
+考虑到将写的内容爬取下来，保存起来的避免误删，算是个备份的，而且方便查找，阅读起来也更方便，使用起来也好很多<br>
 
 ## 亮点
 1、保存**回答**到**pdf**、**markdown**，并保存相应的图片、codes以及website，排版基本按照网页，**支持保存数学公式到markdown**，回答会保存提问和自己的回答
@@ -18,25 +18,25 @@
 每篇article都附带了修改时间和IP属地
 <img src="./showimg/article1.png" width="60%"/>
 
-<span style="color:#7a3e9d;"><b>保存到Markdown格式的数学公式、codes和图片</b></span>
-<a href="https://zhuanlan.zhihu.com/p/605710105">泰勒公式推导方式</a> 
-<a href="https://zhuanlan.zhihu.com/p/622433720">c++_set运算符重载</a>
-<img src="./showimg/article2.png" width="39%"/><img src="./showimg/article4.png" width="39%"/>
+<span style="color:#7a3e9d;"><b>保存到Markdown格式的数学公式、codes和图片</b></span><br>
+<a href="https://zhuanlan.zhihu.com/p/605710105">泰勒公式推导方式</a> <br>
+<a href="https://zhuanlan.zhihu.com/p/622433720">c++_set运算符重载</a><br>
+<img src="./showimg/article2.png" width="39%"/><img src="./showimg/article4.png" width="39%"/><br>
 
-<span style="color:#7a3e9d;"><b>保存到PDF格式的，标题下面是网址</b></span>
-<img src="./showimg/article3.png" width="39%"/><img src="./showimg/article5.png" width="39%"/>
+<span style="color:#7a3e9d;"><b>保存到PDF格式的，标题下面是网址</b></span><br>
+<img src="./showimg/article3.png" width="39%"/><img src="./showimg/article5.png" width="39%"/><br>
 
 ### 爬取到的回答展示
-<a href="./answer">点击即可进入answer目录查看的</a>
-每篇回答也附带了修改时间和IP属地
+<a href="./answer">点击即可进入answer目录查看的</a><br>
+每篇回答也附带了修改时间和IP属地<br>
 
-<span style="color:#7a3e9d;"><b>保存到Markdown格式的数学公式、codes和图片</b></span>
-<a href="https://www.zhihu.com/question/605881267/answer/3075609886">矩阵A正定，证A的逆矩阵和伴随矩阵也正定</a> 
-<a href="https://www.zhihu.com/question/30315894/answer/3089595368">Visual_Studio_Code_怎么编写运行_C、C++_程序</a>
-<img src="./showimg/answer1.png" width="39%"/><img src="./showimg/answer2.png" width="60%"/>
+<span style="color:#7a3e9d;"><b>保存到Markdown格式的数学公式、codes和图片</b></span><br>
+<a href="https://www.zhihu.com/question/605881267/answer/3075609886">矩阵A正定，证A的逆矩阵和伴随矩阵也正定</a> <br>
+<a href="https://www.zhihu.com/question/30315894/answer/3089595368">Visual_Studio_Code_怎么编写运行_C、C++_程序</a><br>
+<img src="./showimg/answer1.png" width="39%"/><img src="./showimg/answer2.png" width="60%"/><br>
 
-<span style="color:#7a3e9d;"><b>保存到PDF格式的，标题下面是网址</b></span>
-<img src="./showimg/answer3.png" width="39%"/><img src="./showimg/answer4.png" width="39%"/>
+<span style="color:#7a3e9d;"><b>保存到PDF格式的，标题下面是网址</b></span><br>
+<img src="./showimg/answer3.png" width="39%"/><img src="./showimg/answer4.png" width="39%"/><br>
 
 ## 环境以及安装
 **win10** **python**
