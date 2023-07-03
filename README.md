@@ -57,11 +57,11 @@ pip install -r .\requirement.txt</code><br>
 <br>
 <img src="./showimg/login.png" width="29%"/>
 <br>
-### 2、每项单独爬取<br>
+### 2、每项单独爬取
 爬取一旦开始就自动运行了，爬取窗口一般不能最小化，可以做其他事情的<br>
 **爬取知乎想法**
 <br>
-默认的爬取每篇想法的睡眠时间是 **6s*图片的数量** 以上<br>
+默认的爬取每篇想法的睡眠时间是 **6s*图片的数量** 以上
 `
 python.exe crawler.py --think
 `
@@ -82,7 +82,7 @@ python.exe crawler.py --article
 `
 python.exe crawler.py --think --article --answer
 `
-<br>
+
 ### 又发布了一篇，只爬取写的这篇
 第一次可以全部爬取，等所有article或者回答或者想法都已经爬取好以后，此时若是又写了一篇或者几篇，而且想爬取到本地，可以将<b>article/article.txt</b>这个档案重命名到<b>article/article_2023_06_20.txt</b>，或者重命名answer.txt，然后将写好的article或者回答的网址和标题按照之前档案的格式再create一个article.txt/answer.txt档案，运行爬取程序就可以了的，想法会跳过已经爬取好的时间，所以可以按照上面的方式运行，此时只会爬取article.txt/answer.txt的网址<img src="./showimg/add1.png" width="90%"/>
 <br>
