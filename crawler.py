@@ -306,12 +306,16 @@ def cleartxt(kkk):
         kkk = kkk.replace("\n", "")
     return kkk
 
-def recursion(nod, article, number, driver, dircrea):
+def recursion(nod, article, number, driver, dircrea, bk=False):
     if isinstance(nod, dict):
         if 'nodeName' in nod.keys() and nod['nodeName']=='#text':
             kkk = cleartxt(nod['textContent'])
             if len(kkk) > 0:
+                if bk:
+                    article += "**"
                 article += nod['textContent']
+                if bk:
+                    article += "**"
             return article, number
         
     elif isinstance(nod, webdriver.remote.webelement.WebElement):
@@ -322,7 +326,7 @@ def recursion(nod, article, number, driver, dircrea):
             article += "\n" + '#' * int(tag_name[-1]) + ' '
             p_childNodes = driver.execute_script("return arguments[0].childNodes;", nod)
             for pnode in p_childNodes:
-                article, number = recursion(pnode, article, number, driver, dircrea)
+                article, number = recursion(pnode, article, number, driver, dircrea, bk)
             article += '\n'
         elif tag_name=="span":
             datatex = nod.get_attribute("data-tex")
@@ -336,11 +340,15 @@ def recursion(nod, article, number, driver, dircrea):
                 imgchunk = nod.find_elements(By.TAG_NAME, 'img')
                 achunk = nod.find_elements(By.TAG_NAME, 'a')
                 if len(imgchunk)==0 and len(achunk)==0:
+                    if bk:
+                        article += "**"
                     article += nod.text
+                    if bk:
+                        article += "**"
                 else:
                     p_childNodes = driver.execute_script("return arguments[0].childNodes;", nod)
                     for pnode in p_childNodes:
-                        article, number = recursion(pnode, article, number, driver, dircrea)
+                        article, number = recursion(pnode, article, number, driver, dircrea, bk)
             # else:
             #     formula_span = nod.find_elements(By.CLASS_NAME, "ztext-math")
             #     for jf in range(len(formula_span)):
@@ -355,22 +363,29 @@ def recursion(nod, article, number, driver, dircrea):
                 else:
                     article += "["+nod.text+"]"+"("+linksite + ")"
         elif tag_name=="b" or tag_name=="strong":
-            txt = nod.text
-            while len(txt) > 0 and txt[-1] == " ":
-                txt = txt[:-1]
-            article += " **" + txt + "** "
+            p_childNodes = driver.execute_script("return arguments[0].childNodes;", nod)
+            for pnode in p_childNodes:
+                article, number = recursion(pnode, article, number, driver, dircrea, True)
+            # txt = nod.text
+            # while len(txt) > 0 and txt[-1] == " ":
+            #     txt = txt[:-1]
+            # article += " **" + txt + "** "
         elif tag_name=="em":
+            if bk:
+                article += "**"
             article += nod.text
+            if bk:
+                article += "**"
         # elif tag_name=='td':
         #     article += nod.text
         elif tag_name in ['table', 'tbody', 'tr', 'td', 'u']:
             p_childNodes = driver.execute_script("return arguments[0].childNodes;", nod)
             for pnode in p_childNodes:
-                article, number = recursion(pnode, article, number, driver, dircrea)
+                article, number = recursion(pnode, article, number, driver, dircrea, bk)
         elif tag_name=='p':
             p_childNodes = driver.execute_script("return arguments[0].childNodes;", nod)
             for pnode in p_childNodes:
-                article, number = recursion(pnode, article, number, driver, dircrea)
+                article, number = recursion(pnode, article, number, driver, dircrea, bk)
             article += "\n"
         elif tag_name=="div":
             # atags = nod.find_elements(By.TAG_NAME, 'a')
@@ -381,7 +396,7 @@ def recursion(nod, article, number, driver, dircrea):
             else:
                 p_childNodes = driver.execute_script("return arguments[0].childNodes;", nod)
                 for pnode in p_childNodes:
-                    article, number = recursion(pnode, article, number, driver, dircrea)
+                    article, number = recursion(pnode, article, number, driver, dircrea, bk)
         elif tag_name=="figure":
             imgchunk = nod.find_elements(By.TAG_NAME, 'img')
             for i in range(len(imgchunk)):
