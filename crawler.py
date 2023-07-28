@@ -383,10 +383,12 @@ def recursion(nod, article, number, driver, dircrea, bk=False):
             for pnode in p_childNodes:
                 article, number = recursion(pnode, article, number, driver, dircrea, bk)
         elif tag_name=='p':
-            p_childNodes = driver.execute_script("return arguments[0].childNodes;", nod)
-            for pnode in p_childNodes:
-                article, number = recursion(pnode, article, number, driver, dircrea, bk)
-            article += "\n"
+            try:
+                p_childNodes = driver.execute_script("return arguments[0].childNodes;", nod)
+                for pnode in p_childNodes:
+                    article, number = recursion(pnode, article, number, driver, dircrea, bk)
+            except:
+                article += nod.text
         elif tag_name=="div":
             # atags = nod.find_elements(By.TAG_NAME, 'a')
             prenode = nod.find_elements(By.TAG_NAME, 'code')
