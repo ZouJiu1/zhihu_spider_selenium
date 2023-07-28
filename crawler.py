@@ -363,13 +363,15 @@ def recursion(nod, article, number, driver, dircrea, bk=False):
                 else:
                     article += "["+nod.text+"]"+"("+linksite + ")"
         elif tag_name=="b" or tag_name=="strong":
-            p_childNodes = driver.execute_script("return arguments[0].childNodes;", nod)
-            for pnode in p_childNodes:
-                article, number = recursion(pnode, article, number, driver, dircrea, True)
-            # txt = nod.text
-            # while len(txt) > 0 and txt[-1] == " ":
-            #     txt = txt[:-1]
-            # article += " **" + txt + "** "
+            try:
+                p_childNodes = driver.execute_script("return arguments[0].childNodes;", nod)
+                for pnode in p_childNodes:
+                    article, number = recursion(pnode, article, number, driver, dircrea, True)
+            except:
+                txt = nod.text
+                while len(txt) > 0 and txt[-1] == " ":
+                    txt = txt[:-1]
+                article += " **" + txt + "** "
         elif tag_name=="em":
             if bk:
                 article += "**"
