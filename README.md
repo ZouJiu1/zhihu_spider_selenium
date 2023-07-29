@@ -4,6 +4,8 @@
 ## 亮点
 1、保存**回答**到**pdf**、**markdown**，并保存相应的图片、codes以及website，排版基本按照网页，**支持保存数学公式到markdown**，回答会保存提问和自己的回答<br>
 
+###### 20230729 使用BeautifulSoup库来进行解析网页，使用起来更加稳定的，之前是使用的selenium
+
 2、保存**article**到**pdf**、**markdown**，并保存相应的图片、codes以及website，排版基本按照网页，**支持保存数学公式到markdown**<br>
 
 3、保存**想法**到text并保存相应的图片，最后对所有text进行汇总到一个档案<br>

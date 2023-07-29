@@ -26,6 +26,7 @@ from selenium.webdriver.common.print_page_options import PrintOptions
 from selenium.webdriver.support import expected_conditions as EC
 import base64
 from zipfile import ZipFile
+from bs4 import BeautifulSoup
 
 abspath = os.path.abspath(__file__)
 filename = abspath.split(os.sep)[-1]
@@ -306,6 +307,107 @@ def cleartxt(kkk):
         kkk = kkk.replace("\n", "")
     return kkk
 
+def parser_beautiful(innerHTML, article, number, dircrea, bk=False):
+    if not innerHTML:
+        return article, number
+    if bk:
+        article += "**"
+    if isinstance(innerHTML, str):
+        article += innerHTML.text
+        return article, number
+
+    for chi in innerHTML.children:
+        # article, number = parser_beautiful(chi, article, number, dircrea, bk)
+        tag_name = chi.name
+        if isinstance(chi, str):
+            article += chi.text
+            continue
+        else:
+            cll = [c for c in chi.children]
+        if tag_name in ['table', 'tbody', 'tr', 'td', 'u', 'em']:
+            article, number = parser_beautiful(chi, article, number, dircrea, bk)
+        elif tag_name=="br":
+            article += "\n"
+        elif tag_name=="p":
+            article, number = parser_beautiful(chi, article, number, dircrea, bk)
+            article += "\n\n"
+        # elif tag_name=="br":
+        #     article += "<br>\n"
+        elif tag_name in ['h1', 'h2', 'h3', 'h4', 'h5', 'h6']:
+            article += '#' * int(tag_name[-1]) + ' '
+            article, number = parser_beautiful(chi, article, number, dircrea, bk)
+            article += '\n\n'
+        elif tag_name=="span":
+            datatex = None
+            classc = None
+            if 'data-tex' in chi.attrs.keys():
+                datatex = chi.attrs["data-tex"]
+            if 'class' in chi.attrs.keys():
+                classc = chi.attrs["class"]
+            if datatex and classc and 'ztext-math' in classc:
+                if article[-3-1:]=='<br>' or article[-1:]=='\n':
+                    article += "\n$" + chi.attrs["data-tex"] + "$"
+                else:
+                    article += "$" + chi.attrs["data-tex"] + "$"
+            else:
+                article, number = parser_beautiful(chi, article, number, dircrea, bk)
+                # article += nod.text
+        elif tag_name=="a":
+            linksite = None
+            if 'href' in chi.attrs.keys():
+                linksite = chi.attrs['href']
+            if linksite:
+                linksite = linksite.replace("//link.zhihu.com/?target=https%3A", "").replace("//link.zhihu.com/?target=http%3A", "")
+                if article[-1]=='\n':
+                    article += "["+chi.text+"]"+"("+linksite + ")"
+                else:
+                    article += "\n\n["+chi.text+"]"+"("+linksite + ")"
+        elif tag_name=='b' or tag_name=='strong':
+            if len(cll) > 1:
+                article, number = parser_beautiful(chi, article, number, dircrea, True)
+            else:
+                txt = chi.text
+                while len(txt) > 0 and txt[-1] == " ":
+                    txt = txt[:-1]
+                article += " **" + txt + "** "
+        elif tag_name=="figure":
+            noscript = chi.find_all('noscript')
+            if len(noscript) > 0:
+                chi.noscript.extract()
+            imgchunk = chi.find_all('img')
+            for i in range(len(imgchunk)):
+                imglink = None
+                if 'data-original' in imgchunk[i].attrs.keys():
+                    imglink = imgchunk[i].attrs["data-original"]
+
+                if 'data-actualsrc' in imgchunk[i].attrs.keys():
+                    imglink = imgchunk[i].attrs['data-actualsrc']
+
+                if imglink==None:
+                    imglink = imgchunk[i].attrs["src"]
+                try:
+                    response = requests.get(imglink, timeout=30)
+                except:
+                    try:
+                        response = requests.get(imglink, timeout=30)
+                    except:
+                        continue
+                if response.status_code==200:
+                    article += ''' <img src="%d.jpg" width="100%%"/> \n\n'''%number
+                    # article += '''<img src="%d.jpg"/>'''%number
+                    with open(os.path.join(dircrea, str(number) + '.jpg'), 'wb') as obj:
+                        obj.write(response.content)
+                    number += 1
+                    crawlsleep(sleeptime)
+        elif tag_name=="div":
+            prenode = chi.find_all('code')
+            if len(prenode) > 0:
+                for i in prenode:
+                    article += "\n\n```\n" + i.text + "\n```\n\n"
+    if bk:
+        article += "**"
+    return article, number
+
 def recursion(nod, article, number, driver, dircrea, bk=False):
     if isinstance(nod, dict):
         if 'nodeName' in nod.keys() and nod['nodeName']=='#text':
@@ -324,9 +426,12 @@ def recursion(nod, article, number, driver, dircrea, bk=False):
             article += "<br>\n"
         elif tag_name in ['h1', 'h2', 'h3', 'h4', 'h5', 'h6']:
             article += "\n" + '#' * int(tag_name[-1]) + ' '
-            p_childNodes = driver.execute_script("return arguments[0].childNodes;", nod)
-            for pnode in p_childNodes:
-                article, number = recursion(pnode, article, number, driver, dircrea, bk)
+            try:
+                p_childNodes = driver.execute_script("return arguments[0].childNodes;", nod)
+                for pnode in p_childNodes:
+                    article, number = recursion(pnode, article, number, driver, dircrea, bk)
+            except:
+                pass
             article += '\n'
         elif tag_name=="span":
             datatex = nod.get_attribute("data-tex")
@@ -391,6 +496,7 @@ def recursion(nod, article, number, driver, dircrea, bk=False):
                     article, number = recursion(pnode, article, number, driver, dircrea, bk)
             except:
                 article += nod.text
+            article += "\n"
         elif tag_name=="div":
             # atags = nod.find_elements(By.TAG_NAME, 'a')
             prenode = nod.find_elements(By.TAG_NAME, 'code')
@@ -511,28 +617,34 @@ def crawl_article_detail(driver:webdriver):
         except:
             pass
 
-        richtext = driver.find_element(By.CLASS_NAME, "Post-RichText")
-        titletext = driver.find_element(By.CLASS_NAME, "Post-Title")
-        article_childNodes = driver.execute_script("return arguments[0].childNodes;", richtext)
-        article = ""
-        number = 0
-        for nod in article_childNodes:
-            article, number = recursion(nod, article, number, driver, dircrea)
+        if MarkDown_FORMAT:
+            richtext = driver.find_element(By.CLASS_NAME, "Post-RichText")
+            titletext = driver.find_element(By.CLASS_NAME, "Post-Title")
+            # article_childNodes = driver.execute_script("return arguments[0].childNodes;", richtext)
+            article = ""
+            number = 0
+            
+            # for nod in article_childNodes:
+                # article, number = recursion(nod, article, number, driver, dircrea)
 
-        article = article.replace("修改\n", "").replace("开启赞赏\n", "开启赞赏, ").replace("添加评论\n", "").replace("分享\n", "").\
-            replace("收藏\n", "").replace("设置\n", "")
-        tle = titletext.text
-        article += "<br>\n\n["+driver.current_url+"](" + driver.current_url + ")<br>\n"
-        if len(article) > 0:
-            try:
-                f=open(os.path.join(dircrea, nam + "_formula_" + ".md"), 'w', encoding='utf-8')
-                f.close()
-            except:
-                nam = nam[:len(nam)//2]
-            with open(os.path.join(dircrea, nam + "_formula_" + ".md"), 'w', encoding='utf-8') as obj:
-                obj.write("# " + tle+"\n\n")
-                if len(article) > 0:
-                    obj.write(article + "\n\n\n")
+            inner = driver.execute_script("return arguments[0].innerHTML;", richtext)
+            innerHTML = BeautifulSoup(inner, "html.parser")
+            article, number = parser_beautiful(innerHTML, article, number, dircrea)
+
+            article = article.replace("修改\n", "").replace("开启赞赏\n", "开启赞赏, ").replace("添加评论\n", "").replace("分享\n", "").\
+                replace("收藏\n", "").replace("设置\n", "")
+            tle = titletext.text
+            article += "<br>\n\n["+driver.current_url+"](" + driver.current_url + ")<br>\n"
+            if len(article) > 0:
+                try:
+                    f=open(os.path.join(dircrea, nam + "_formula_" + ".md"), 'w', encoding='utf-8')
+                    f.close()
+                except:
+                    nam = nam[:len(nam)//2]
+                with open(os.path.join(dircrea, nam + "_formula_" + ".md"), 'w', encoding='utf-8') as obj:
+                    obj.write("# " + tle+"\n\n")
+                    if len(article) > 0:
+                        obj.write(article + "\n\n\n")
 
         # article to pdf 
         clocktxt = driver.find_element(By.CLASS_NAME, "Post-NormalMain").find_element(By.CLASS_NAME, "ContentItem-time")
@@ -694,11 +806,16 @@ def crawl_answer_detail(driver:webdriver):
             crawlsleep(max(2, sleeptime))
             button.click()
             question_RichText = QuestionRichText.find_element(By.CLASS_NAME, "RichText")
-            question_childNodes = driver.execute_script("return arguments[0].childNodes;", question_RichText)
+            # question_childNodes = driver.execute_script("return arguments[0].childNodes;", question_RichText)
             
             article += "# question： <br>\n"
-            for nod in question_childNodes:
-                article, number = recursion(nod, article, number, driver, dircrea)
+            # for nod in question_childNodes:
+            #     article, number = recursion(nod, article, number, driver, dircrea)
+
+            inner = driver.execute_script("return arguments[0].innerHTML;", question_RichText)
+            innerHTML = BeautifulSoup(inner, "html.parser")
+            article, number = parser_beautiful(innerHTML, article, number, dircrea)
+
         except:
             pass
         article += "<br>\n\n\n# answer： <br>\n"
@@ -734,43 +851,49 @@ def crawl_answer_detail(driver:webdriver):
         richtext = QuestionAnswer.find_element(By.CLASS_NAME, "CopyrightRichText-richText")
         Createdtime = QuestionAnswer.find_element(By.CLASS_NAME, "ContentItem-time")
         Created = Createdtime.text[4:].replace(" ", "_").replace(":", "_").replace(".", "_")
-        metatext = QuestionAnswer.find_elements(By.TAG_NAME, "meta")
-        for i in range(len(metatext)):
-            # if metatext[i].get_attribute("itemprop")=="dateCreated":
-            #     Created = metatext[i].get_attribute("content").replace(" ", "_").replace(":", "_").replace(".", "_")
-            if metatext[i].get_attribute("itemprop")=="dateModified":
-                Modified = metatext[i].get_attribute("content").replace(" ", "_").replace(":", "_").replace(".", "_")
 
-        answer_childNodes = driver.execute_script("return arguments[0].childNodes;", richtext)
-        for nod in answer_childNodes:
-            article, number = recursion(nod, article, number, driver, dircrea)
+        if MarkDown_FORMAT:
+            metatext = QuestionAnswer.find_elements(By.TAG_NAME, "meta")
+            for i in range(len(metatext)):
+                # if metatext[i].get_attribute("itemprop")=="dateCreated":
+                #     Created = metatext[i].get_attribute("content").replace(" ", "_").replace(":", "_").replace(".", "_")
+                if metatext[i].get_attribute("itemprop")=="dateModified":
+                    Modified = metatext[i].get_attribute("content").replace(" ", "_").replace(":", "_").replace(".", "_")
 
-        article = article.replace("修改\n", "").replace("开启赞赏\n", "开启赞赏, ").replace("添加评论\n", "").replace("分享\n", "").\
-            replace("收藏\n", "").replace("设置\n", "")
+            # answer_childNodes = driver.execute_script("return arguments[0].childNodes;", richtext)
+            # for nod in answer_childNodes:
+            #     article, number = recursion(nod, article, number, driver, dircrea)
 
-        url = driver.current_url
-        article += "<br>\n\n["+url+"](" + url + ")<br>\n"
-        driver.execute_script("const para = document.createElement(\"h2\"); \
-                                const br = document.createElement(\"br\"); \
-                                const node = document.createTextNode(\"%s\");\
-                                para.appendChild(node);\
-                                const currentDiv = document.getElementsByClassName(\"QuestionHeader-title\")[0];\
-                                currentDiv.appendChild(br); \
-                                currentDiv.appendChild(para);"%url \
-                            )
-        
-        if len(article) > 0:
-            try:
-                f=open(os.path.join(dircrea, nam + "_formula_" + ".md"), 'w', encoding='utf-8')
-                f.close()
-            except:
-                nam = nam[:len(nam)//2]
-            with open(os.path.join(dircrea, nam + "_formula_" + ".md"), 'w', encoding='utf-8') as obj:
-                obj.write("# "+ title+"\n\n")
-                if len(article) > 0:
-                    obj.write(article + "\n\n\n")
-                obj.write("Created: " + Created + "\n")
-                obj.write("Modified: " + Modified + "\n")
+            inner = driver.execute_script("return arguments[0].innerHTML;", richtext)
+            innerHTML = BeautifulSoup(inner, "html.parser")
+            article, number = parser_beautiful(innerHTML, article, number, dircrea)
+
+            article = article.replace("修改\n", "").replace("开启赞赏\n", "开启赞赏, ").replace("添加评论\n", "").replace("分享\n", "").\
+                replace("收藏\n", "").replace("设置\n", "")
+
+            url = driver.current_url
+            article += "<br>\n\n["+url+"](" + url + ")<br>\n"
+            driver.execute_script("const para = document.createElement(\"h2\"); \
+                                    const br = document.createElement(\"br\"); \
+                                    const node = document.createTextNode(\"%s\");\
+                                    para.appendChild(node);\
+                                    const currentDiv = document.getElementsByClassName(\"QuestionHeader-title\")[0];\
+                                    currentDiv.appendChild(br); \
+                                    currentDiv.appendChild(para);"%url \
+                                )
+            
+            if len(article) > 0:
+                try:
+                    f=open(os.path.join(dircrea, nam + "_formula_" + ".md"), 'w', encoding='utf-8')
+                    f.close()
+                except:
+                    nam = nam[:len(nam)//2]
+                with open(os.path.join(dircrea, nam + "_formula_" + ".md"), 'w', encoding='utf-8') as obj:
+                    obj.write("# "+ title+"\n\n")
+                    if len(article) > 0:
+                        obj.write(article + "\n\n\n")
+                    obj.write("Created: " + Created + "\n")
+                    obj.write("Modified: " + Modified + "\n")
 
         # article to pdf
         pagetopdf(driver, dircrea, temp_name, nam, answerdir, url, Created=Created)
@@ -903,6 +1026,7 @@ if __name__ == "__main__":
                     断了再次爬取的话，可以配置到--links_scratch，事先保存好website')
     parser.add_argument('--article', action="store_true", help=r'crawl article, 是否爬取知乎的文章, 保存到pdf、markdown以及相关图片等，已经爬取过的不会重复爬取，\
                     断了再次爬取的话，可以配置到--links_scratch，事先保存好website')
+    parser.add_argument('--MarkDown', action="store_true", help=r'save MarkDown')
     parser.add_argument('--links_scratch', action="store_true", \
                         help=r'crawl links scratch for answer or article, 是否使用已经保存好的website和title, 否则再次爬取website')
     args = parser.parse_args()
@@ -912,25 +1036,26 @@ if __name__ == "__main__":
     crawl_article = args.article
     crawl_links_scratch = args.links_scratch
     addtime = args.computer_time_sleep
-    
+    MarkDown_FORMAT = args.MarkDown
     
     # crawl_think = False
     # crawl_article = False
     # crawl_answer = True
     # crawl_links_scratch = False
-    # python.exe c:/Users/10696/Desktop/access/zhihu/crawler.py --think 
-    # python.exe c:/Users/10696/Desktop/access/zhihu/crawler.py --article 
-    # python.exe c:/Users/10696/Desktop/access/zhihu/crawler.py --answer 
+    # MarkDown_FORMAT = True
+    # python.exe c:/Users/10696/Desktop/access/zhihu/crawler.py --think --MarkDown
+    # python.exe c:/Users/10696/Desktop/access/zhihu/crawler.py --article  --MarkDown
+    # python.exe c:/Users/10696/Desktop/access/zhihu/crawler.py --answer  --MarkDown
     # python.exe c:/Users/10696/Desktop/access/zhihu/crawler.py --think --answer --article 
     zhihu()
-    try:
-        crawl_links_scratch = False
-        zhihu()
-    except:
-        time.sleep(600)
-        try:
-            zhihu()
-        except:
-            time.sleep(600)
-            zhihu()
+    # try:
+    #     crawl_links_scratch = False
+    #     zhihu()
+    # except:
+    #     time.sleep(600)
+    #     try:
+    #         zhihu()
+    #     except:
+    #         time.sleep(600)
+    #         zhihu()
     logfp.close()
