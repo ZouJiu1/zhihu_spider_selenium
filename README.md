@@ -4,11 +4,15 @@
 ## 亮点
 1、保存**回答**到**pdf**、**markdown**，并保存相应的图片、codes以及website，排版基本按照网页，**支持保存数学公式到markdown**，回答会保存提问和自己的回答<br>
 
-###### 20230729 使用BeautifulSoup库来进行解析网页，使用起来更加稳定的，之前是使用的selenium
-
 2、保存**article**到**pdf**、**markdown**，并保存相应的图片、codes以及website，排版基本按照网页，**支持保存数学公式到markdown**<br>
 
 3、保存**想法**到text并保存相应的图片，最后对所有text进行汇总到一个档案<br>
+
+## LOG
+-----------20230729 使用BeautifulSoup库来进行解析网页，使用起来更加稳定的而且排版更加贴近网页，之前是使用的selenium
+
+-----------202306 上传
+
 ### 爬取到的想法展示
 按照发布时间分目录存放，保存了图片以及文本文件<br>
 <a href="./think">点击即可进入think目录查看的</a><br>
@@ -69,20 +73,24 @@ python.exe crawler.py --think
 `
 
 **爬取知乎回答** <br>
-默认的爬取每篇回答的睡眠时间是**16s**以上，这边实际爬取耗时平均是每篇 **30s**，每个图片需要6s <br>
+默认的爬取每篇回答的睡眠时间是**16s**以上，这边实际爬取耗时平均是每篇 **30s**每个图片需要6s, --MarkDown控制是否保存markdown格式的网页内容 <br>
+
+若是PDF看起来版式太大，调小参数就可以printop.scale，不是特殊情况一般不用调整
+
 `
-python.exe crawler.py --answer
+python.exe crawler.py --answer --MarkDown
 `
 
 **爬取知乎的article**   <br>
-默认的爬取每篇article的睡眠时间是**16s**以上，这边实际爬取130多篇，耗时平均是每篇 **33.096s**，每个图片需要6s  <br>
+默认的爬取每篇article的睡眠时间是**16s**以上，这边实际爬取130多篇，耗时平均是每篇 **33.096s**每个图片需要6s  <br>
+
 `
-python.exe crawler.py --article
+python.exe crawler.py --article --MarkDown
 `
 
 ### 3、三项一起爬取的   <br>
 `
-python.exe crawler.py --think --article --answer
+python.exe crawler.py --think --article --answer --MarkDown
 `
 
 ### 又发布了一篇，只爬取写的这篇

@@ -687,15 +687,15 @@ def pagetopdf(driver, dircrea, temp_name, nam, destdir, url, Created=""):
             pass
 
     printop = PrintOptions()
-    # printop.shrink_to_fit = True
+    printop.shrink_to_fit = True
     # printop.margin_left = 0
     # printop.margin_right = 0
     # printop.margin_top = 0
     # printop.margin_bottom = 0
-    printop.page_height = 29.7
-    printop.page_width = 21
+    # printop.page_height = 29.7
+    # printop.page_width = 21
     printop.background = True
-    # printop.scale = 1.0
+    printop.scale = 1.0
       
     pdf = driver.print_page(print_options=printop)
     with open(os.path.join(dircrea, nam + ".pdf"), 'wb') as obj:
@@ -1039,14 +1039,14 @@ if __name__ == "__main__":
     MarkDown_FORMAT = args.MarkDown
     
     # crawl_think = False
-    # crawl_article = False
+    # crawl_article = True
     # crawl_answer = True
     # crawl_links_scratch = False
     # MarkDown_FORMAT = True
     # python.exe c:/Users/10696/Desktop/access/zhihu/crawler.py --think --MarkDown
     # python.exe c:/Users/10696/Desktop/access/zhihu/crawler.py --article  --MarkDown
     # python.exe c:/Users/10696/Desktop/access/zhihu/crawler.py --answer  --MarkDown
-    # python.exe c:/Users/10696/Desktop/access/zhihu/crawler.py --think --answer --article 
+    # python.exe c:/Users/10696/Desktop/access/zhihu/crawler.py --think --answer --article  --MarkDown
     zhihu()
     # try:
     #     crawl_links_scratch = False
