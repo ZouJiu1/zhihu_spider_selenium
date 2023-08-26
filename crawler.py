@@ -358,7 +358,7 @@ def parser_beautiful(innerHTML, article, number, dircrea, bk=False):
                 linksite = chi.attrs['href']
             if linksite:
                 linksite = linksite.replace("//link.zhihu.com/?target=https%3A", "").replace("//link.zhihu.com/?target=http%3A", "")
-                if article[-1]=='\n':
+                if len(article) > 0 and article[-1]=='\n':
                     article += "["+chi.text+"]"+"("+linksite + ")"
                 else:
                     article += "\n\n["+chi.text+"]"+"("+linksite + ")"
