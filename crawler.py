@@ -404,6 +404,8 @@ def parser_beautiful(innerHTML, article, number, dircrea, bk=False):
             if len(prenode) > 0:
                 for i in prenode:
                     article += "\n\n```\n" + i.text + "\n```\n\n"
+            else:
+                article, number = parser_beautiful(chi, article, number, dircrea, bk)
     if bk:
         article += "**"
     return article, number
