@@ -345,10 +345,16 @@ def parser_beautiful(innerHTML, article, number, dircrea, bk=False):
             if 'class' in chi.attrs.keys():
                 classc = chi.attrs["class"]
             if datatex and classc and 'ztext-math' in classc:
-                if article[-3-1:]=='<br>' or article[-1:]=='\n':
-                    article += "\n$" + chi.attrs["data-tex"] + "$"
-                else:
-                    article += "$" + chi.attrs["data-tex"] + "$"
+                content = chi.attrs["data-tex"]
+                while len(content) > 0 and ' '==content[0]:
+                    content = content[1:]
+                while len(content) > 0 and ' '==content[-1]:
+                    content = content[:-1]
+                if len(content) > 0:
+                    if article[-3-1:]=='<br>' or article[-1:]=='\n':
+                        article += "\n$" + content + "$"
+                    else:
+                        article += "$" + content + "$"
             else:
                 article, number = parser_beautiful(chi, article, number, dircrea, bk)
                 # article += nod.text
