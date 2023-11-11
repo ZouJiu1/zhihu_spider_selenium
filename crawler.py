@@ -947,12 +947,15 @@ def downloaddriver():
     url = "https://msedgedriver.azureedge.net/116.0.1938.62/edgedriver_win64.zip"
     if not os.path.exists(driverpath):
         ret = requests.get("https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver/")
+        if ret.status_code!=200:
+            assert ret.status_code!=200
         ret = BeautifulSoup(ret.content, 'html.parser')
-        ddl = ret.find_all('a', class_='driver-download__link')
+        # divall = ret.find_all('div', class_=r'common-card--lightblue')
+        ddl = ret.find_all('a')
         for k in ddl:
             key = k.attrs.keys()
             href = k.attrs['href']
-            if 'href' in key and "win64" in href:
+            if 'href' in key and "win64" in href and ".zip" in href:
                 url = href
                 break
         response = requests.get(url)
