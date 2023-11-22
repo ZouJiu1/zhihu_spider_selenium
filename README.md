@@ -106,6 +106,7 @@ python.exe crawler.py --think --article --answer --MarkDown
 ### 注意
 1、需要较好的网速，本机网速测验是下载100Mbps，上传60Mbps，低点也可以的，不是太慢太卡就行[https://www.speedtest.cn/](https://www.speedtest.cn/)<br>
 2、爬取时设置了睡眠时间, 避免给知乎服务器带来太大压力，可以日间调试好，然后深夜运行爬取人少, 给其他小伙伴更好的用户体验, 避免知乎顺着网线过来找人，默认**6**s<br>
+3、若是一直停在登录页面，可能是之前保存的cookie失效了，需要再次登录保存cookie
 
 ### blogs
 [https://www.aliyundrive.com/s/NikyVRJq8JV   阿里云分享的](https://www.aliyundrive.com/s/NikyVRJq8JV) `提取  0h3l` <br>

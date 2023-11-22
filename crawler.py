@@ -925,7 +925,12 @@ def login_loadsavecookie():
     try:
         load_cookie(driver, cookie_path)
         driver.get(r"https://www.zhihu.com/")
-    except:
+    except Exception as e:
+        if os.path.exists(cookie_path):
+            os.remove(cookie_path)
+            print("浏览器cookie失效了，删除了之前的cookie，需要再次登录并保存cookie。")
+        else:
+            print("需要登陆并保存cookie，下次就不用登录了。")
         driver = login(driver)
         save_cookie(driver, cookie_path)
         driver.quit()
