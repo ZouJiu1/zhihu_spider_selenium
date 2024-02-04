@@ -959,6 +959,8 @@ def downloaddriver():
         ddl = ret.find_all('a')
         for k in ddl:
             key = k.attrs.keys()
+            if 'href' not in key:
+                continue
             href = k.attrs['href']
             if 'href' in key and "win64" in href and ".zip" in href:
                 url = href
