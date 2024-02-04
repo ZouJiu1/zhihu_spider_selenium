@@ -925,6 +925,8 @@ def login_loadsavecookie():
     try:
         load_cookie(driver, cookie_path)
         driver.get(r"https://www.zhihu.com/")
+        WebDriverWait(driver, timeout=10).until(lambda d: d.find_element(By.ID, 'Popover15-toggle'))
+        toggle = driver.find_element(By.ID, 'Popover15-toggle')
     except Exception as e:
         if os.path.exists(cookie_path):
             os.remove(cookie_path)
