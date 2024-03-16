@@ -211,12 +211,12 @@ def crawl_think_links(driver:webdriver, username:str):
     allbegin = now()
     numberpage = 1e-6        
     for p in range(1, maxpages + 1):
-        begin = now()
         driver.get(think_one + str(p))
         WebDriverWait(driver, timeout=10).until(lambda d: d.find_element(By.CLASS_NAME, "Pagination"))
         items = driver.find_elements(By.CLASS_NAME, "PinItem")
         #crawl answer one by one
         for i in range(len(items)):
+            begin = now()
             RichContent = items[i].find_element(By.CLASS_NAME, 'RichContent-inner')
             clockitem = items[i].find_element(By.CLASS_NAME, 'ContentItem-time')
             try:
@@ -230,7 +230,7 @@ def crawl_think_links(driver:webdriver, username:str):
                 WebDriverWait(items[i], timeout=10).until(lambda d: len(d.text) > 2)
             # clockspan = clockitem.find_element(By.TAG_NAME, 'span')
             clock = clockitem.text
-            clock = clock[3 + 1:].replace(" ", "_").replace(":", "_")
+            clock = clock[3 + 1:].replace(":", "_")
             dirthink = os.path.join(thinkdir, clock)
             if os.path.exists(dirthink):
                 continue
@@ -289,9 +289,9 @@ def crawl_think_links(driver:webdriver, username:str):
                 except:
                     break
             crawlsleep(sleeptime)
-        end = now()
-        print("爬取一篇想法耗时：", clock,  round(end - begin, 3))
-        logfp.write("爬取一篇想法耗时：" +clock + " "+ str(round(end - begin, 3)) + "\n")
+            end = now()
+            print("爬取一篇想法耗时：", clock,  round(end - begin, 3))
+            logfp.write("爬取一篇想法耗时：" +clock + " "+ str(round(end - begin, 3)) + "\n")
         numberpage += 1
         # crawlsleep(600)
     allend = now()
@@ -551,7 +551,7 @@ def crawl_article_detail(driver:webdriver):
             i = i.strip()
             ind = i.index(" ")
             website = i[:ind]
-            title   = i[ind+1:].replace(" ", "_").replace("\n", "")
+            title   = i[ind+1:].replace("\n", "")
             website_col[website] = title
     allbegin = now()
     numberpage = 1e-6        
@@ -559,7 +559,7 @@ def crawl_article_detail(driver:webdriver):
         begin = now()
         nam = title.replace(":", "_").replace("?", ";"). \
                     replace("/","_").replace("\\","_").replace("\"", "_").\
-                    replace("*","_").replace("|", "_").replace(" ", "_").replace("？", "").replace("！", "").\
+                    replace("*","_").replace("|", "_").replace("？", "").replace("！", "").\
                     replace("<", "小于").replace(">", "大于").replace("(", "").\
                     replace(")", "")
         temp_name = nam #str(np.random.randint(999999999)) + str(np.random.randint(999999999))
@@ -596,7 +596,7 @@ def crawl_article_detail(driver:webdriver):
 
         #get article text
         driver.get(website)
-        WebDriverWait(driver, timeout=10).until(lambda d: d.find_element(By.CLASS_NAME, "Post-Topics"))
+        WebDriverWait(driver, timeout=20).until(lambda d: d.find_element(By.CLASS_NAME, "Post-Topics"))
             
         #https://stackoverflow.com/questions/61877719/how-to-get-current-scroll-height-in-selenium-python
         scrollHeight = driver.execute_script('''return document.documentElement.scrollHeight''')
@@ -646,11 +646,11 @@ def crawl_article_detail(driver:webdriver):
             article += "<br>\n\n["+driver.current_url+"](" + driver.current_url + ")<br>\n"
             if len(article) > 0:
                 try:
-                    f=open(os.path.join(dircrea, nam + "_formula_" + ".md"), 'w', encoding='utf-8')
+                    f=open(os.path.join(dircrea, nam + ".md"), 'w', encoding='utf-8')
                     f.close()
                 except:
                     nam = nam[:len(nam)//2]
-                with open(os.path.join(dircrea, nam + "_formula_" + ".md"), 'w', encoding='utf-8') as obj:
+                with open(os.path.join(dircrea, nam + ".md"), 'w', encoding='utf-8') as obj:
                     obj.write("# " + tle+"\n\n")
                     if len(article) > 0:
                         obj.write(article + "\n\n\n")
@@ -667,7 +667,7 @@ def crawl_article_detail(driver:webdriver):
                                 currentDiv.appendChild(br); \
                                 currentDiv.appendChild(para);"%url \
                             )
-        clock = clocktxt.text[3+1:].replace(" ", "_").replace(":", "_")
+        clock = clocktxt.text[3+1:].replace(":", "_")
         pagetopdf(driver, dircrea, temp_name, nam, articledir, url, Created=clock)
         
         crawlsleep(sleeptime)
@@ -711,7 +711,7 @@ def pagetopdf(driver, dircrea, temp_name, nam, destdir, url, Created=""):
         obj.write(base64.b64decode(pdf))
     
     # driver.execute_script('window.print();')
-    clock = Created    #clocktxt.text[3+1:].replace(" ", "_").replace(":", "_")
+    clock = Created    #clocktxt.text[3+1:].replace(":", "_")
     with open(os.path.join(dircrea, clock+".txt"), 'w', encoding='utf-8') as obj:
         obj.write(clock+"\n")
         obj.write(url)
@@ -745,7 +745,7 @@ def crawl_answer_detail(driver:webdriver):
             i = i.strip()
             ind = i.index(" ")
             website = i[:ind]
-            title   = i[ind+1:].replace(" ", "_").replace("\n", "")
+            title   = i[ind+1:].replace("\n", "")
             website_col[website] = title
     allbegin = now()
     numberpage = 1e-6
@@ -753,7 +753,7 @@ def crawl_answer_detail(driver:webdriver):
         begin = now()
         nam = title.replace(":", "_").replace("?", ";"). \
                     replace("/","_").replace("\\","_").replace("\"", "_").\
-                    replace("*","_").replace("|", "_").replace(" ", "_").replace("？", "").replace("！", "").\
+                    replace("*","_").replace("|", "_").replace("？", "").replace("！", "").\
                     replace("<", "小于").replace(">", "大于")
         if len(nam) > 200:
             nam = nam[:100]
@@ -816,7 +816,7 @@ def crawl_answer_detail(driver:webdriver):
             button.click()
             question_RichText = QuestionRichText.find_element(By.CLASS_NAME, "RichText")
             # question_childNodes = driver.execute_script("return arguments[0].childNodes;", question_RichText)
-            
+
             article += "# question： <br>\n"
             # for nod in question_childNodes:
             #     article, number = recursion(nod, article, number, driver, dircrea)
@@ -824,7 +824,6 @@ def crawl_answer_detail(driver:webdriver):
             inner = driver.execute_script("return arguments[0].innerHTML;", question_RichText)
             innerHTML = BeautifulSoup(inner, "html.parser")
             article, number = parser_beautiful(innerHTML, article, number, dircrea)
-
         except:
             pass
         article += "<br>\n\n\n# answer： <br>\n"
@@ -859,15 +858,15 @@ def crawl_answer_detail(driver:webdriver):
         QuestionAnswer = driver.find_element(By.CLASS_NAME, "QuestionAnswer-content")
         richtext = QuestionAnswer.find_element(By.CLASS_NAME, "CopyrightRichText-richText")
         Createdtime = QuestionAnswer.find_element(By.CLASS_NAME, "ContentItem-time")
-        Created = Createdtime.text[4:].replace(" ", "_").replace(":", "_").replace(".", "_")
+        Created = Createdtime.text[4:].replace(":", "_").replace(".", "_")
 
         if MarkDown_FORMAT:
             metatext = QuestionAnswer.find_elements(By.TAG_NAME, "meta")
             for i in range(len(metatext)):
                 # if metatext[i].get_attribute("itemprop")=="dateCreated":
-                #     Created = metatext[i].get_attribute("content").replace(" ", "_").replace(":", "_").replace(".", "_")
+                #     Created = metatext[i].get_attribute("content").replace(":", "_").replace(".", "_")
                 if metatext[i].get_attribute("itemprop")=="dateModified":
-                    Modified = metatext[i].get_attribute("content").replace(" ", "_").replace(":", "_").replace(".", "_")
+                    Modified = metatext[i].get_attribute("content").replace(":", "_").replace(".", "_")
 
             # answer_childNodes = driver.execute_script("return arguments[0].childNodes;", richtext)
             # for nod in answer_childNodes:
@@ -893,11 +892,11 @@ def crawl_answer_detail(driver:webdriver):
             
             if len(article) > 0:
                 try:
-                    f=open(os.path.join(dircrea, nam + "_formula_" + ".md"), 'w', encoding='utf-8')
+                    f=open(os.path.join(dircrea, nam + ".md"), 'w', encoding='utf-8')
                     f.close()
                 except:
                     nam = nam[:len(nam)//2]
-                with open(os.path.join(dircrea, nam + "_formula_" + ".md"), 'w', encoding='utf-8') as obj:
+                with open(os.path.join(dircrea, nam + ".md"), 'w', encoding='utf-8') as obj:
                     obj.write("# "+ title+"\n\n")
                     if len(article) > 0:
                         obj.write(article + "\n\n\n")
@@ -1081,10 +1080,10 @@ if __name__ == "__main__":
     # crawl_answer = True
     # crawl_links_scratch = False
     # MarkDown_FORMAT = True
-    # python.exe c:/Users/10696/Desktop/access/zhihu/crawler.py --think --MarkDown
-    # python.exe c:/Users/10696/Desktop/access/zhihu/crawler.py --article  --MarkDown
-    # python.exe c:/Users/10696/Desktop/access/zhihu/crawler.py --answer  --MarkDown
-    # python.exe c:/Users/10696/Desktop/access/zhihu/crawler.py --think --answer --article  --MarkDown
+    # python crawler.py --think --MarkDown --links_scratch
+    # python crawler.py --article  --MarkDown --links_scratch
+    # python crawler.py --answer  --MarkDown --links_scratch
+    # python crawler.py --think --answer --article  --MarkDown --links_scratch
     zhihu()
     # try:
     #     crawl_links_scratch = False

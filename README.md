@@ -58,7 +58,7 @@ pip install -r .\requirement.txt</code><br>
 ## 使用
 ### 1、登录
 运行以下内容，这一步是**手动**操作，需要人工输入账号和密码，然后点击登录就行，登录以后会自动保存好cookie，以后爬取时就不用重复登录了，保存的cookie在这个目录的**cookie**，产生的档案是**cookie_zhihu.pkl**<br>
- <h3><code><b style="color:#7a3e9d;">python.exe crawler.py </b></code></h3>
+ <h3><code><b style="color:#7a3e9d;">python crawler.py </b></code></h3>
 <span style="color:#7a3e9d;">运行以后会弹出一个浏览器，自动打开知乎页面以后就可以开始登录，下图所示就是登录页面，两类登录方式都可以，只要能登录就行，<a style="color:black;"><b>点击登录以后，不要再操作页面，键盘或鼠标都不可以，登录时间默认给了130s时间，130秒以后会自动退出，然后查看目录cookie是否保存好cookie_zhihu.pkl，保存好就可以开始爬取了。</b></a></span>
 <br>
 <img src="./showimg/login.png" width="29%"/>
@@ -69,7 +69,7 @@ pip install -r .\requirement.txt</code><br>
 
 默认的爬取每篇想法的睡眠时间是 **6s*图片的数量** 以上 <br>
 `
-python.exe crawler.py --think
+python crawler.py --think --links_scratch
 `
 
 **爬取知乎回答** <br>
@@ -78,25 +78,60 @@ python.exe crawler.py --think
 若是PDF看起来版式太大，调小参数就可以printop.scale，不是特殊情况一般不用调整
 
 `
-python.exe crawler.py --answer --MarkDown
+python crawler.py --answer --MarkDown --links_scratch
 `
 
 **爬取知乎的article**   <br>
 默认的爬取每篇article的睡眠时间是**16s**以上，这边实际爬取130多篇，耗时平均是每篇 **33.096s**每个图片需要6s  <br>
 
 `
-python.exe crawler.py --article --MarkDown
+python crawler.py --article --MarkDown --links_scratch
 `
 
 ### 3、三项一起爬取的   <br>
 `
-python.exe crawler.py --think --article --answer --MarkDown
+python crawler.py --think --article --answer --MarkDown --links_scratch
 `
 
+### 参数详细解释
+--links_scratch：重命名*.txt，然后爬取所有的article链接+标题，或者所有的回答链接+标题。article\article.txt和answer\answers.txt都保存了链接和标题
+--MarkDown：保存markdown格式的article或者回答的
+--think：是否爬取想法的
+--article：是否爬取article的
+--answer：是否爬取回答的
+<br><br>
+所以，爬取所有的article或者回答的链接，需要加--links_scratch，会重命名article.txt或者answers.txt，然后生成answers.txt或者article.txt，并爬取txt的网址
+```
+python crawler.py --think --article --answer --MarkDown --links_scratch
+python crawler.py --answer --MarkDown --links_scratch
+python crawler.py --article --MarkDown --links_scratch
+python crawler.py --think --MarkDown --links_scratch
+```
+
+直接爬取当前article.txt或者answers.txt的网址，则需要删除--links_scratch
+```
+python crawler.py --think --article --answer --MarkDown
+python crawler.py --answer --MarkDown
+python crawler.py --article --MarkDown
+python crawler.py --think --MarkDown
+```
+
 ### 又发布了一篇，只爬取写的这篇
-第一次可以全部爬取，等所有article或者回答或者想法都已经爬取好以后，此时若是又写了一篇或者几篇，而且想爬取到本地，可以将<b>article/article.txt</b>这个档案重命名到<b>article/article_2023_06_20.txt</b>，或者重命名answer.txt，然后将写好的article或者回答的网址和标题按照之前档案的格式再create一个article.txt/answer.txt档案，运行爬取程序就可以了的，想法会跳过已经爬取好的时间，所以可以按照上面的方式运行，此时只会爬取article.txt/answer.txt的网址<img src="./showimg/add1.png" width="90%"/>
+第一次可以全部爬取，等所有article或者回答或者想法都已经爬取好以后，此时若是又写了一篇或者几篇，而且想爬取到本地，可以将<b>article/article.txt</b>这个档案重命名到<b>article/article_2023_06_20.txt</b>，或者重命名answer.txt，然后将写好的article或者回答的网址和标题按照之前档案的格式再create一个article.txt/answer.txt档案，运行爬取程序就可以了的，<b>此时需要去掉选项--links_scratch避免爬取所有链接</b>，想法会跳过已经爬取好的时间，所以可以按照上面的方式运行，此时只会爬取article.txt/answer.txt的网址<img src="./showimg/add1.png" width="90%"/>
 <br>
-若是过了很长时间，发布了很多篇，此时一篇一篇加入不太方便，可以直接将<b>article/article.txt</b>这个档案重命名到<b>article/article_2023_06_20.txt</b>，或者重命名answer.txt，然后运行爬取程序即可，上面提到了已经爬取过的不会重复爬取，所以实际只会爬取最近写好的article或者回答，想法则会直接跳过已经爬取的内容。
+也就是
+
+```
+python crawler.py --think --article --answer --MarkDown
+或者
+python crawler.py --answer --MarkDown
+或者
+python crawler.py --article --MarkDown
+或者
+python crawler.py --think --MarkDown
+```
+<br>
+若是过了很长很长时间，发布了很多篇，此时一篇一篇加入不太方便，可以直接将<b>article/article.txt</b>这个档案重命名到<b>article/article_2023_06_20.txt</b>，或者重命名answer.txt，然后运行爬取程序即可，<b>需要加入选项--links_scratch爬取所有链接</b>，上面提到了已经爬取过的不会重复爬取，所以实际只会爬取最近写好的article或者回答，想法则会直接跳过已经爬取的内容。
 
 ### 目录
 <b>think</b>：该目录存放爬取到的想法内容<br>
