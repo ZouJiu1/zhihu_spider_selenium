@@ -95,9 +95,13 @@ python crawler.py --think --article --answer --MarkDown --links_scratch
 
 ### 参数详细解释
 --links_scratch：重命名*.txt，然后爬取所有的article链接+标题，或者所有的回答链接+标题。article\article.txt和answer\answers.txt都保存了链接和标题
+
 --MarkDown：保存markdown格式的article或者回答的
+
 --think：是否爬取想法的
+
 --article：是否爬取article的
+
 --answer：是否爬取回答的
 <br><br>
 所以，爬取所有的article或者回答的链接，需要加--links_scratch，会重命名article.txt或者answers.txt，然后生成answers.txt或者article.txt，并爬取txt的网址
