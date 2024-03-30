@@ -143,9 +143,12 @@ def crawl_article_links(driver:webdriver, username:str):
     article_detail = r'https://zhuanlan.zhihu.com/p/'
 
     driver.get(articles.replace("zoujiu1", username))
-    pages = driver.find_elements(By.CLASS_NAME, 'PaginationButton')[-2]
-    assert isinstance(int(pages.text), int)
-    maxpages = int(pages.text)
+    pages = driver.find_elements(By.CLASS_NAME, 'PaginationButton')
+    if len(pages)==0:
+        maxpages = 1
+    else:
+        assert isinstance(int(pages.text), int)
+        maxpages = int(pages.text)
     
     all_article_detail = {}
     #how many pages of articles
