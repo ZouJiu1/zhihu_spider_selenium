@@ -331,6 +331,9 @@ def parser_beautiful(innerHTML, article, number, dircrea, bk=False):
             article, number = parser_beautiful(chi, article, number, dircrea, bk)
         elif tag_name=="br":
             article += "\n"
+        elif tag_name=="blockquote":
+            art, number = parser_beautiful(chi, "", number, dircrea, bk)
+            article += "<blockquote>\n" + art + "\n</blockquote>\n"
         elif tag_name=="p":
             article, number = parser_beautiful(chi, article, number, dircrea, bk)
             article += "\n\n"
@@ -361,6 +364,8 @@ def parser_beautiful(innerHTML, article, number, dircrea, bk=False):
             else:
                 article, number = parser_beautiful(chi, article, number, dircrea, bk)
                 # article += nod.text
+        elif tag_name=="u":
+            article, number = parser_beautiful(chi, article, number, dircrea, bk)
         elif tag_name=="a":
             linksite = None
             if 'href' in chi.attrs.keys():
@@ -369,6 +374,8 @@ def parser_beautiful(innerHTML, article, number, dircrea, bk=False):
                 linksite = linksite.replace("//link.zhihu.com/?target=https%3A", "").replace("//link.zhihu.com/?target=http%3A", "")
                 if len(article) > 0 and article[-1]=='\n':
                     article += "["+chi.text+"]"+"("+linksite + ")"
+                elif len(article) > 0 and article[-1] not in ['\n', ' ']:
+                    article += " ["+chi.text+"]"+"("+linksite + ")"
                 else:
                     article += "\n\n["+chi.text+"]"+"("+linksite + ")"
         elif tag_name=='b' or tag_name=='strong':
@@ -1079,10 +1086,10 @@ if __name__ == "__main__":
     MarkDown_FORMAT = args.MarkDown
     
     # crawl_think = False
-    # crawl_article = True
+    crawl_article = True
     # crawl_answer = True
     # crawl_links_scratch = False
-    # MarkDown_FORMAT = True
+    MarkDown_FORMAT = True
     # python crawler.py --think --MarkDown --links_scratch
     # python crawler.py --article  --MarkDown --links_scratch
     # python crawler.py --answer  --MarkDown --links_scratch
