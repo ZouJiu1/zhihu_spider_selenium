@@ -559,9 +559,19 @@ def crawl_article_detail(driver:webdriver):
     with open(os.path.join(articledir, 'article.txt'), 'r', encoding='utf-8') as obj:
         for i in obj.readlines():
             i = i.strip()
+            while len(i)>0 and i[0]==' ':
+                i = i[1:]
+            if i=="":
+                continue
             ind = i.index(" ")
             website = i[:ind]
             title   = i[ind+1:].replace("\n", "")
+            while len(title)>0 and title[0]==' ':
+                title = title[1:]
+            while len(title)>0 and title[-1]==' ':
+                title = title[:-1]
+            if title=="":
+                continue
             website_col[website] = title
     allbegin = now()
     numberpage = 1e-6        
@@ -753,9 +763,19 @@ def crawl_answer_detail(driver:webdriver):
     with open(os.path.join(answerdir, 'answers.txt'), 'r', encoding='utf-8') as obj:
         for i in obj.readlines():
             i = i.strip()
+            while len(i)>0 and i[0]==' ':
+                i = i[1:]
+            if i=="":
+                continue
             ind = i.index(" ")
             website = i[:ind]
             title   = i[ind+1:].replace("\n", "")
+            while len(title)>0 and title[0]==' ':
+                title = title[1:]
+            while len(title)>0 and title[-1]==' ':
+                title = title[:-1]
+            if title=="":
+                continue
             website_col[website] = title
     allbegin = now()
     numberpage = 1e-6
