@@ -143,6 +143,7 @@ def crawl_article_links(driver:webdriver, username:str):
     article_detail = r'https://zhuanlan.zhihu.com/p/'
 
     driver.get(articles.replace("zoujiu1", username))
+    crawlsleep(6)
     pages = driver.find_elements(By.CLASS_NAME, 'PaginationButton')
     if len(pages)==0:
         maxpages = 1
@@ -174,10 +175,19 @@ def crawl_answers_links(driver:webdriver, username:str):
     answer_one = r'https://www.zhihu.com/people/zoujiu1/answers?page='
 
     driver.get(answer.replace("zoujiu1", username))
-    WebDriverWait(driver, timeout=10).until(lambda d: d.find_element(By.CLASS_NAME, "Pagination"))
-    pages = driver.find_elements(By.CLASS_NAME, 'PaginationButton')[-2]
-    assert isinstance(int(pages.text), int)
-    maxpages = int(pages.text)
+    crawlsleep(6)
+    try:
+        WebDriverWait(driver, timeout=10).until(lambda d: d.find_element(By.CLASS_NAME, "Pagination"))
+        pages = driver.find_elements(By.CLASS_NAME, 'PaginationButton')[-2]
+        assert isinstance(int(pages.text), int)
+        maxpages = int(pages.text)
+    except:
+        pages = driver.find_elements(By.CLASS_NAME, 'PaginationButton')
+        if len(pages)==0:
+            maxpages = 1
+        else:
+            assert isinstance(int(pages.text), int)
+            maxpages = int(pages.text)
     
     all_answer_detail = []
     #how many pages of answers
@@ -204,10 +214,19 @@ def crawl_think_links(driver:webdriver, username:str):
     think_one = r'https://www.zhihu.com/people/zoujiu1/pins?page='
 
     driver.get(think.replace("zoujiu1", username))
-    WebDriverWait(driver, timeout=10).until(lambda d: d.find_element(By.CLASS_NAME, "Pagination"))
-    pages = driver.find_elements(By.CLASS_NAME, 'PaginationButton')[-2]
-    assert isinstance(int(pages.text), int)
-    maxpages = int(pages.text)
+    crawlsleep(6)
+    try:
+        WebDriverWait(driver, timeout=10).until(lambda d: d.find_element(By.CLASS_NAME, "Pagination"))
+        pages = driver.find_elements(By.CLASS_NAME, 'PaginationButton')[-2]
+        assert isinstance(int(pages.text), int)
+        maxpages = int(pages.text)
+    except:
+        pages = driver.find_elements(By.CLASS_NAME, 'PaginationButton')
+        if len(pages)==0:
+            maxpages = 1
+        else:
+            assert isinstance(int(pages.text), int)
+            maxpages = int(pages.text)
     
     # all_think_detail = []
     #how many pages of think
@@ -1107,9 +1126,9 @@ if __name__ == "__main__":
     
     # crawl_think = False
     # crawl_article = True
-    # crawl_answer = True
+    crawl_answer = True
     # crawl_links_scratch = False
-    # MarkDown_FORMAT = True
+    MarkDown_FORMAT = True
     # python crawler.py --think --MarkDown --links_scratch
     # python crawler.py --article  --MarkDown --links_scratch
     # python crawler.py --answer  --MarkDown --links_scratch
