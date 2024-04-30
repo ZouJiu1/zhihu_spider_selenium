@@ -1126,9 +1126,9 @@ if __name__ == "__main__":
     
     # crawl_think = False
     # crawl_article = True
-    crawl_answer = True
+    # crawl_answer = True
     # crawl_links_scratch = False
-    MarkDown_FORMAT = True
+    # MarkDown_FORMAT = True
     # python crawler.py --think --MarkDown --links_scratch
     # python crawler.py --article  --MarkDown --links_scratch
     # python crawler.py --answer  --MarkDown --links_scratch
