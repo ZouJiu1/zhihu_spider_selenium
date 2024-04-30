@@ -143,13 +143,18 @@ def crawl_article_links(driver:webdriver, username:str):
     article_detail = r'https://zhuanlan.zhihu.com/p/'
 
     driver.get(articles.replace("zoujiu1", username))
-    crawlsleep(6)
-    pages = driver.find_elements(By.CLASS_NAME, 'PaginationButton')
-    if len(pages)==0:
-        maxpages = 1
-    else:
+    try:
+        WebDriverWait(driver, timeout=10).until(lambda d: d.find_element(By.CLASS_NAME, "Pagination"))
+        pages = driver.find_elements(By.CLASS_NAME, 'PaginationButton')[-2]
         assert isinstance(int(pages.text), int)
         maxpages = int(pages.text)
+    except:
+        pages = driver.find_elements(By.CLASS_NAME, 'PaginationButton')
+        if len(pages)==0:
+            maxpages = 1
+        else:
+            assert isinstance(int(pages.text), int)
+            maxpages = int(pages.text)
     
     all_article_detail = {}
     #how many pages of articles
@@ -175,7 +180,6 @@ def crawl_answers_links(driver:webdriver, username:str):
     answer_one = r'https://www.zhihu.com/people/zoujiu1/answers?page='
 
     driver.get(answer.replace("zoujiu1", username))
-    crawlsleep(6)
     try:
         WebDriverWait(driver, timeout=10).until(lambda d: d.find_element(By.CLASS_NAME, "Pagination"))
         pages = driver.find_elements(By.CLASS_NAME, 'PaginationButton')[-2]
@@ -214,7 +218,6 @@ def crawl_think_links(driver:webdriver, username:str):
     think_one = r'https://www.zhihu.com/people/zoujiu1/pins?page='
 
     driver.get(think.replace("zoujiu1", username))
-    crawlsleep(6)
     try:
         WebDriverWait(driver, timeout=10).until(lambda d: d.find_element(By.CLASS_NAME, "Pagination"))
         pages = driver.find_elements(By.CLASS_NAME, 'PaginationButton')[-2]
