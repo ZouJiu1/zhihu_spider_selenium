@@ -153,6 +153,7 @@ def crawl_article_links(driver:webdriver, username:str):
         if len(pages)==0:
             maxpages = 1
         else:
+            pages = pages[-2]
             assert isinstance(int(pages.text), int)
             maxpages = int(pages.text)
     
@@ -190,6 +191,7 @@ def crawl_answers_links(driver:webdriver, username:str):
         if len(pages)==0:
             maxpages = 1
         else:
+            pages = pages[-2]
             assert isinstance(int(pages.text), int)
             maxpages = int(pages.text)
     
@@ -228,6 +230,7 @@ def crawl_think_links(driver:webdriver, username:str):
         if len(pages)==0:
             maxpages = 1
         else:
+            pages = pages[-2]
             assert isinstance(int(pages.text), int)
             maxpages = int(pages.text)
     
@@ -1127,10 +1130,10 @@ if __name__ == "__main__":
     addtime = args.computer_time_sleep
     MarkDown_FORMAT = args.MarkDown
     
-    # crawl_think = False
+    # crawl_think = True
     # crawl_article = True
     # crawl_answer = True
-    # crawl_links_scratch = False
+    # crawl_links_scratch = True
     # MarkDown_FORMAT = True
     # python crawler.py --think --MarkDown --links_scratch
     # python crawler.py --article  --MarkDown --links_scratch
