@@ -602,14 +602,18 @@ def crawl_article_detail(driver:webdriver):
     numberpage = 1e-6        
     for website, title in website_col.items():
         begin = now()
-        nam = title.replace(":", "_").replace("?", ";"). \
+        nam = title.replace(":", "_").replace("?", "_问号_"). \
                     replace("/","_").replace("\\","_").replace("\"", "_").\
-                    replace("*","_").replace("|", "_").replace("？", "").replace("！", "").\
+                    replace("*","_").replace("|", "_").replace("？", "_问号_").replace("！", "").\
                     replace("<", "小于").replace(">", "大于").replace("(", "").\
                     replace(")", "")
         temp_name = nam #str(np.random.randint(999999999)) + str(np.random.randint(999999999))
         if len(temp_name) > 200:
             temp_name = temp_name[:100]
+        while temp_name!="" and temp_name[-1]==" ":
+            temp_name = temp_name[:-1]
+        while temp_name!="" and temp_name[0]==" ":
+            temp_name = temp_name[1:]
         # nam_pinyin = pinyin.get(nam, format='numerical')
         # if '租房' not in title:
         #     continue
@@ -806,14 +810,17 @@ def crawl_answer_detail(driver:webdriver):
     numberpage = 1e-6
     for website, title in website_col.items():
         begin = now()
-        nam = title.replace(":", "_").replace("?", ";"). \
+        nam = title.replace(":", "_").replace("?", "_问号_"). \
                     replace("/","_").replace("\\","_").replace("\"", "_").\
-                    replace("*","_").replace("|", "_").replace("？", "").replace("！", "").\
+                    replace("*","_").replace("|", "_").replace("？", "_问号_").replace("！", "").\
                     replace("<", "小于").replace(">", "大于")
         if len(nam) > 200:
             nam = nam[:100]
         temp_name = nam #str(np.random.randint(999999999)) + str(np.random.randint(999999999))
-
+        while temp_name!="" and temp_name[-1]==" ":
+            temp_name = temp_name[:-1]
+        while temp_name!="" and temp_name[0]==" ":
+            temp_name = temp_name[1:]
         # nam_pinyin = pinyin.get(nam, format='numerical')
         # if '不定积分该用什么方' not in title:
         #     continue
