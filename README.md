@@ -68,30 +68,30 @@ pip install -r .\requirement.txt</code><br>
 **爬取知乎想法**  <br>
 
 默认的爬取每篇想法的睡眠时间是 **6s*图片的数量** 以上 <br>
-`
+```Bash []
 python crawler.py --think --links_scratch
-`
+```
 
 **爬取知乎回答** <br>
 默认的爬取每篇回答的睡眠时间是**16s**以上，这边实际爬取耗时平均是每篇 **30s**每个图片需要6s, --MarkDown控制是否保存markdown格式的网页内容 <br>
 
 若是PDF看起来版式太大，调小参数就可以printop.scale，不是特殊情况一般不用调整
 
-`
+```Bash []
 python crawler.py --answer --MarkDown --links_scratch
-`
+```
 
 **爬取知乎的article**   <br>
 默认的爬取每篇article的睡眠时间是**16s**以上，这边实际爬取130多篇，耗时平均是每篇 **33.096s**每个图片需要6s  <br>
 
-`
+```Bash []
 python crawler.py --article --MarkDown --links_scratch
-`
+```
 
 ### 3、三项一起爬取的   <br>
-`
+```Bash []
 python crawler.py --think --article --answer --MarkDown --links_scratch
-`
+```
 
 ### 参数详细解释
 --links_scratch：重命名*.txt，然后爬取所有的article链接+标题，或者所有的回答链接+标题。article\article.txt和answer\answers.txt都保存了链接和标题
@@ -105,7 +105,8 @@ python crawler.py --think --article --answer --MarkDown --links_scratch
 --answer：是否爬取回答的
 <br><br>
 所以，爬取所有的article或者回答的链接，需要加--links_scratch，会重命名article.txt或者answers.txt，然后生成answers.txt或者article.txt，并爬取txt的网址
-```
+
+```Bash []
 python crawler.py --think --article --answer --MarkDown --links_scratch
 python crawler.py --answer --MarkDown --links_scratch
 python crawler.py --article --MarkDown --links_scratch
@@ -113,7 +114,8 @@ python crawler.py --think --MarkDown --links_scratch
 ```
 
 直接爬取当前article.txt或者answers.txt的网址，则需要删除--links_scratch
-```
+
+```Bash []
 python crawler.py --think --article --answer --MarkDown
 python crawler.py --answer --MarkDown
 python crawler.py --article --MarkDown
@@ -125,7 +127,7 @@ python crawler.py --think --MarkDown
 <br>
 也就是
 
-```
+```Bash []
 python crawler.py --think --article --answer --MarkDown
 或者
 python crawler.py --answer --MarkDown
