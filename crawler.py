@@ -444,7 +444,13 @@ def parser_beautiful(innerHTML, article, number, dircrea, bk=False):
             prenode = chi.find_all('code')
             if len(prenode) > 0:
                 for i in prenode:
-                    article += "\n\n```\n" + i.text + "\n```\n\n"
+                    language = "text"
+                    if 'class' in i.attrs.keys():
+                        lan = i.attrs['class']
+                        if len(lan)>0:
+                            if 'language-' in lan[0]:
+                                language = lan[0].split("-")[-1]
+                    article += "\n\n```%s []\n"%language + i.text + "\n```\n\n"
             else:
                 article, number = parser_beautiful(chi, article, number, dircrea, bk)
                 article += "\n\n"
