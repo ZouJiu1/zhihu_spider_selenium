@@ -456,6 +456,9 @@ def parser_beautiful(innerHTML, article, number, dircrea, bk=False):
                 article += "\n\n"
     if bk:
         article += "**"
+    article = article.replace("\n\n\n\n\n", "\n\n")
+    article = article.replace("\n\n\n\n", "\n\n")
+    article = article.replace("\n\n\n", "\n\n")
     return article, number
 
 def recursion(nod, article, number, driver, dircrea, bk=False):
