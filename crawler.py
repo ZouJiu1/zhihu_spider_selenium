@@ -771,22 +771,22 @@ def pagetopdf(driver, dircrea, temp_name, nam, destdir, url, Created=""):
         obj.write(clock+"\n")
         obj.write(url)
     
-    # clocktmp = clock.split(".")[0].replace("T", "_")
-    # clock = clocktmp.split("・")[0]
-    # address = ""
-    # try:
-    #     address += clocktmp.split("・")[1]
-    # except:
-    #     pass
-    # address = ""
-    # try:
-    #     os.rename(dircrea, os.path.join(destdir, nam[:3]+".pdf"))
-    # except:
-    #     crawlsleep(3+addtime)
-    #     try:
-    #         os.rename(dircrea, os.path.join(destdir, nam[:3]+".pdf"))
-    #     except:
-    #         pass
+    clocktmp = clock.split(".")[0].replace("T", "_")
+    clock = clocktmp.split("・")[0]
+    address = ""
+    try:
+        address += clocktmp.split("・")[1]
+    except:
+        pass
+    address = ""
+    try:
+        os.rename(dircrea, os.path.join(destdir, clock + "_" + nam + "_" + address))
+    except:
+        crawlsleep(3+addtime)
+        try:
+            os.rename(dircrea, os.path.join(destdir, clock + "_" + nam + "_" + address))
+        except:
+            pass
 
 def crawl_answer_detail(driver:webdriver):
     website_col = {}
