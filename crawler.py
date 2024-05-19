@@ -701,11 +701,11 @@ def crawl_article_detail(driver:webdriver):
             article += "<br>\n\n["+driver.current_url+"](" + driver.current_url + ")<br>\n"
             if len(article) > 0:
                 try:
-                    f=open(os.path.join(dircrea, nam + ".md"), 'w', encoding='utf-8')
+                    f=open(os.path.join(dircrea, nam[:3] + ".md"), 'w', encoding='utf-8')
                     f.close()
                 except:
                     nam = nam[:len(nam)//2]
-                with open(os.path.join(dircrea, nam + ".md"), 'w', encoding='utf-8') as obj:
+                with open(os.path.join(dircrea, nam[:3] + ".md"), 'w', encoding='utf-8') as obj:
                     obj.write("# " + tle+"\n\n")
                     if len(article) > 0:
                         obj.write(article + "\n\n\n")
@@ -760,9 +760,9 @@ def pagetopdf(driver, dircrea, temp_name, nam, destdir, url, Created=""):
     # printop.page_width = 21
     printop.background = True
     printop.scale = 1.0
-      
+    
     pdf = driver.print_page(print_options=printop)
-    with open(os.path.join(dircrea, nam + ".pdf"), 'wb') as obj:
+    with open(os.path.join(dircrea, nam[:3] + ".pdf"), 'wb') as obj:
         obj.write(base64.b64decode(pdf))
     
     # driver.execute_script('window.print();')
@@ -771,21 +771,22 @@ def pagetopdf(driver, dircrea, temp_name, nam, destdir, url, Created=""):
         obj.write(clock+"\n")
         obj.write(url)
     
-    clocktmp = clock.split(".")[0].replace("T", "_")
-    clock = clocktmp.split("・")[0]
-    address = ""
-    try:
-        address += clocktmp.split("・")[1]
-    except:
-        pass
-    try:
-        os.rename(dircrea, os.path.join(destdir, clock + "_" + nam + "_" + address))
-    except:
-        crawlsleep(3+addtime)
-        try:
-            os.rename(dircrea, os.path.join(destdir, clock + "_" + nam + "_" + address))
-        except:
-            pass
+    # clocktmp = clock.split(".")[0].replace("T", "_")
+    # clock = clocktmp.split("・")[0]
+    # address = ""
+    # try:
+    #     address += clocktmp.split("・")[1]
+    # except:
+    #     pass
+    # address = ""
+    # try:
+    #     os.rename(dircrea, os.path.join(destdir, nam[:3]+".pdf"))
+    # except:
+    #     crawlsleep(3+addtime)
+    #     try:
+    #         os.rename(dircrea, os.path.join(destdir, nam[:3]+".pdf"))
+    #     except:
+    #         pass
 
 def crawl_answer_detail(driver:webdriver):
     website_col = {}
@@ -962,11 +963,11 @@ def crawl_answer_detail(driver:webdriver):
             
             if len(article) > 0:
                 try:
-                    f=open(os.path.join(dircrea, nam + ".md"), 'w', encoding='utf-8')
+                    f=open(os.path.join(dircrea, nam[:3] + ".md"), 'w', encoding='utf-8')
                     f.close()
                 except:
                     nam = nam[:len(nam)//2]
-                with open(os.path.join(dircrea, nam + ".md"), 'w', encoding='utf-8') as obj:
+                with open(os.path.join(dircrea, nam[:3] + ".md"), 'w', encoding='utf-8') as obj:
                     obj.write("# "+ title+"\n\n")
                     if len(article) > 0:
                         obj.write(article + "\n\n\n")
@@ -1146,10 +1147,10 @@ if __name__ == "__main__":
     MarkDown_FORMAT = args.MarkDown
     
     # crawl_think = True
-    crawl_article = True
+    # crawl_article = True
     # crawl_answer = True
     # crawl_links_scratch = True
-    MarkDown_FORMAT = True
+    # MarkDown_FORMAT = True
     # python crawler.py --think --MarkDown --links_scratch
     # python crawler.py --article  --MarkDown --links_scratch
     # python crawler.py --answer  --MarkDown --links_scratch
