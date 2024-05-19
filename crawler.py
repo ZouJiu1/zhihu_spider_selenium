@@ -837,24 +837,38 @@ def crawl_answer_detail(driver:webdriver):
         fileexit = False
         dirname = ''
         filesize = 0
+        # for i in os.listdir(answerdir):
+        #     if nam in i and os.path.isdir(os.path.join(answerdir, i)):
+        #         direxit = True
+        #         dirname = i
+        #         fileexit = os.path.exists(os.path.join(answerdir, dirname, nam + ".pdf"))
+        #         if fileexit:
+        #             filesize = os.path.getsize(os.path.join(answerdir, dirname, nam + ".pdf"))
+        #         break
+        kkk = -9
         for i in os.listdir(answerdir):
             if nam in i and os.path.isdir(os.path.join(answerdir, i)):
                 direxit = True
-                dirname = i
-                fileexit = os.path.exists(os.path.join(answerdir, dirname, nam + ".pdf"))
-                if fileexit:
-                    filesize = os.path.getsize(os.path.join(answerdir, dirname, nam + ".pdf"))
-                break
+                dircol = os.path.join(answerdir, i)
+                for j in os.listdir(dircol):
+                    if '.pdf' in j:
+                        if os.path.getsize(os.path.join(dircol, j)) > 0:
+                            kkk = 9
+                            break
+                if kkk > 0:
+                    break
+        if kkk > 0:
+            continue
         
         dircrea  = os.path.join(answerdir, temp_name)
 
-        if direxit and fileexit and filesize > 0:
-            if '_IP_' in dirname:
-                filnam = dirname[16+1:].split("_IP_")[0]
-            else:
-                filnam = dirname[16+1:][:-1]
-            if filnam == nam:
-                continue
+        # if direxit and fileexit and filesize > 0:
+        #     if '_IP_' in dirname:
+        #         filnam = dirname[16+1:].split("_IP_")[0]
+        #     else:
+        #         filnam = dirname[16+1:][:-1]
+        #     if filnam == nam:
+        #         continue
 
         os.makedirs(dircrea, exist_ok = True)
         
