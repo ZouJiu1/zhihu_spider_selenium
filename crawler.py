@@ -778,7 +778,6 @@ def pagetopdf(driver, dircrea, temp_name, nam, destdir, url, Created=""):
         address += clocktmp.split("・")[1]
     except:
         pass
-    address = ""
     try:
         os.rename(dircrea, os.path.join(destdir, clock + "_" + nam + "_" + address))
     except:
