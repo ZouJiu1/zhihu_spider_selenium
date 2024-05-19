@@ -161,6 +161,7 @@ def crawl_article_links(driver:webdriver, username:str):
     #how many pages of articles
     for p in range(1, maxpages + 1):
         driver.get(articles_one + str(p))
+        WebDriverWait(driver, timeout=10).until(lambda d: d.find_element(By.CLASS_NAME, "ArticleItem"))
         items = driver.find_elements(By.CLASS_NAME, "ArticleItem")
         #crawl article one by one
         for a in range(len(items)):
@@ -168,7 +169,7 @@ def crawl_article_links(driver:webdriver, username:str):
             itemId = json.loads(introduce)
             links = items[a].find_elements(By.TAG_NAME, 'a')[0].get_attribute('href')
             # id = itemId['itemId']
-            title = str(itemId['title'])
+            title = str(itemId['title']).strip()
             all_article_detail[str(title)] = links #article_detail + str(id)
         crawlsleep(sleeptime)
     with open(os.path.join(articledir, 'article.txt'), 'w', encoding='utf-%d'%(6+2)) as obj:
@@ -613,9 +614,10 @@ def crawl_article_detail(driver:webdriver):
         begin = now()
         nam = title.replace(":", "_").replace("?", "_问号_"). \
                     replace("/","_").replace("\\","_").replace("\"", "_").\
-                    replace("*","_").replace("|", "_").replace("？", "_问号_").replace("！", "").\
+                    replace("*","_").replace("|", "_").replace("？", "_问号_").replace("！", "_感叹号_").\
                     replace("<", "小于").replace(">", "大于").replace("(", "").\
-                    replace(")", "")
+                    replace(")", "").replace(",", "_逗号_").replace("，", "_逗号_").replace("   ", "_空格_").\
+                    replace("  ", "_空格_").replace(" ", "_空格_").replace("：", "_冒号_").replace("、", "_顿号_")
         temp_name = nam #str(np.random.randint(999999999)) + str(np.random.randint(999999999))
         if len(temp_name) > 200:
             temp_name = temp_name[:100]
@@ -634,19 +636,14 @@ def crawl_article_detail(driver:webdriver):
         for i in os.listdir(articledir):
             if nam in i and os.path.isdir(os.path.join(articledir, i)):
                 direxit = True
-                dirname = i
-                fileexit = os.path.exists(os.path.join(articledir, dirname, nam + ".pdf"))
-                if fileexit:
-                    filesize = os.path.getsize(os.path.join(articledir, dirname, nam + ".pdf"))
-                # break
-                if direxit and fileexit and filesize > 0:
-                    if '_IP_' in dirname:
-                        filnam = dirname[16+1:].split("_IP_")[0]
-                    else:
-                        filnam = dirname[16+1:][:-1]
-                    if filnam == nam:
-                        kkk = 9
-                        break
+                dircol = os.path.join(articledir, i)
+                for j in os.listdir(dircol):
+                    if '.pdf' in j:
+                        if os.path.getsize(os.path.join(dircol, j)) > 0:
+                            kkk = 9
+                            break
+                if kkk > 0:
+                    break
         if kkk > 0:
             continue
         dircrea  = os.path.join(articledir, temp_name)
@@ -821,8 +818,10 @@ def crawl_answer_detail(driver:webdriver):
         begin = now()
         nam = title.replace(":", "_").replace("?", "_问号_"). \
                     replace("/","_").replace("\\","_").replace("\"", "_").\
-                    replace("*","_").replace("|", "_").replace("？", "_问号_").replace("！", "").\
-                    replace("<", "小于").replace(">", "大于")
+                    replace("*","_").replace("|", "_").replace("？", "_问号_").replace("！", "_感叹号_").\
+                    replace("<", "小于").replace(">", "大于").replace("(", "").\
+                    replace(")", "").replace(",", "_逗号_").replace("，", "_逗号_").replace("   ", "_空格_").\
+                    replace("  ", "_空格_").replace(" ", "_空格_").replace("：", "_冒号_")
         if len(nam) > 200:
             nam = nam[:100]
         temp_name = nam #str(np.random.randint(999999999)) + str(np.random.randint(999999999))
@@ -1147,10 +1146,10 @@ if __name__ == "__main__":
     MarkDown_FORMAT = args.MarkDown
     
     # crawl_think = True
-    # crawl_article = True
+    crawl_article = True
     # crawl_answer = True
     # crawl_links_scratch = True
-    # MarkDown_FORMAT = True
+    MarkDown_FORMAT = True
     # python crawler.py --think --MarkDown --links_scratch
     # python crawler.py --article  --MarkDown --links_scratch
     # python crawler.py --answer  --MarkDown --links_scratch
