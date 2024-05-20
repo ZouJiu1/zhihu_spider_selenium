@@ -619,7 +619,7 @@ def crawl_article_detail(driver:webdriver):
                     replace(")", "").replace(",", "_逗号_").replace("，", "_逗号_").replace("   ", "_空格_").\
                     replace("  ", "_空格_").replace(" ", "_空格_").replace("：", "_冒号_").replace("、", "_顿号_")
         temp_name = nam #str(np.random.randint(999999999)) + str(np.random.randint(999999999))
-        if len(temp_name) > 200:
+        if len(temp_name) > 100:
             temp_name = temp_name[:100]
         while temp_name!="" and temp_name[-1]==" ":
             temp_name = temp_name[:-1]
@@ -822,7 +822,7 @@ def crawl_answer_detail(driver:webdriver):
                     replace("<", "小于").replace(">", "大于").replace("(", "").\
                     replace(")", "").replace(",", "_逗号_").replace("，", "_逗号_").replace("   ", "_空格_").\
                     replace("  ", "_空格_").replace(" ", "_空格_").replace("：", "_冒号_")
-        if len(nam) > 200:
+        if len(nam) > 100:
             nam = nam[:100]
         temp_name = nam #str(np.random.randint(999999999)) + str(np.random.randint(999999999))
         while temp_name!="" and temp_name[-1]==" ":
@@ -1160,10 +1160,10 @@ if __name__ == "__main__":
     MarkDown_FORMAT = args.MarkDown
     
     # crawl_think = True
-    # crawl_article = True
+    crawl_article = True
     # crawl_answer = True
     # crawl_links_scratch = True
-    # MarkDown_FORMAT = True
+    MarkDown_FORMAT = True
     # python crawler.py --think --MarkDown --links_scratch
     # python crawler.py --article  --MarkDown --links_scratch
     # python crawler.py --answer  --MarkDown --links_scratch
