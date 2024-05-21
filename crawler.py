@@ -701,14 +701,15 @@ def crawl_article_detail(driver:webdriver):
             article += "<br>\n\n["+driver.current_url+"](" + driver.current_url + ")<br>\n"
             if len(article) > 0:
                 try:
-                    f=open(os.path.join(dircrea, nam[:3] + ".md"), 'w', encoding='utf-8')
+                    f=open(os.path.join(dircrea, nam[:3] + "_.md"), 'w', encoding='utf-8')
                     f.close()
                 except:
                     nam = nam[:len(nam)//2]
-                with open(os.path.join(dircrea, nam[:3] + ".md"), 'w', encoding='utf-8') as obj:
+                with open(os.path.join(dircrea, nam[:3] + "_.md"), 'w', encoding='utf-8') as obj:
                     obj.write("# " + tle+"\n\n")
                     if len(article) > 0:
                         obj.write(article + "\n\n\n")
+                    obj.write("\n\n\n")
 
         # article to pdf 
         clocktxt = driver.find_element(By.CLASS_NAME, "Post-NormalMain").find_element(By.CLASS_NAME, "ContentItem-time")
@@ -731,7 +732,7 @@ def crawl_article_detail(driver:webdriver):
         #https://github.com/JazzCore/python-pdfkit
         # if article_to_jpg_pdf_markdown:
         #     config = pdfkit.configuration(wkhtmltopdf = wkhtmltopdf_path)
-        #     pdfkit.from_url(website, os.path.join(dircrea, nam_pinyin+".pdf"), configuration = config)
+        #     pdfkit.from_url(website, os.path.join(dircrea, nam_pinyin+"_.pdf"), configuration = config)
             
         end = now()
         print("爬取一篇article耗时：", title, round(end - begin, 3))
@@ -743,10 +744,10 @@ def crawl_article_detail(driver:webdriver):
     logfp.write("平均爬取一篇article耗时：" + str(round((allend - allbegin) / numberpage, 3)) + "\n")
 
 def pagetopdf(driver, dircrea, temp_name, nam, destdir, url, Created=""):
-    fileexit = os.path.exists(os.path.join(dircrea, temp_name + ".pdf"))
+    fileexit = os.path.exists(os.path.join(dircrea, temp_name + "_.pdf"))
     if fileexit:
         try:
-            os.remove(os.path.join(dircrea, temp_name + ".pdf"))
+            os.remove(os.path.join(dircrea, temp_name + "_.pdf"))
         except:
             pass
 
@@ -761,9 +762,13 @@ def pagetopdf(driver, dircrea, temp_name, nam, destdir, url, Created=""):
     printop.background = True
     printop.scale = 1.0
     
-    pdf = driver.print_page(print_options=printop)
-    with open(os.path.join(dircrea, nam[:3] + ".pdf"), 'wb') as obj:
-        obj.write(base64.b64decode(pdf))
+    try:
+        pdf = driver.print_page(print_options=printop)
+        with open(os.path.join(dircrea, nam[:3] + "_.pdf"), 'wb') as obj:
+            obj.write(base64.b64decode(pdf))
+    except:
+        with open(os.path.join(dircrea, nam[:3] + "_pdf.txt"), 'w') as obj:
+            obj.write("the page is too large, can not save, you should save pdf using \"Ctrl+P or Ctrl+Shift+P\"\n")
     
     # driver.execute_script('window.print();')
     clock = Created    #clocktxt.text[3+1:].replace(":", "_")
@@ -772,19 +777,19 @@ def pagetopdf(driver, dircrea, temp_name, nam, destdir, url, Created=""):
         obj.write(url)
     
     clocktmp = clock.split(".")[0].replace("T", "_")
-    clock = clocktmp.split("・")[0]
+    clock = clocktmp.split("・")[0].replace(" ", "_")
     address = ""
     try:
-        address += clocktmp.split("・")[1]
+        address += clocktmp.split("・")[1].replace(" ", "_")
     except:
         pass
     try:
         os.rename(dircrea, os.path.join(destdir, clock + "_" + nam + "_" + address))
-    except:
+    except Exception as e0:
         crawlsleep(3+addtime)
         try:
             os.rename(dircrea, os.path.join(destdir, clock + "_" + nam + "_" + address))
-        except:
+        except Exception as e1:
             pass
 
 def crawl_answer_detail(driver:webdriver):
@@ -840,9 +845,9 @@ def crawl_answer_detail(driver:webdriver):
         #     if nam in i and os.path.isdir(os.path.join(answerdir, i)):
         #         direxit = True
         #         dirname = i
-        #         fileexit = os.path.exists(os.path.join(answerdir, dirname, nam + ".pdf"))
+        #         fileexit = os.path.exists(os.path.join(answerdir, dirname, nam + "_.pdf"))
         #         if fileexit:
-        #             filesize = os.path.getsize(os.path.join(answerdir, dirname, nam + ".pdf"))
+        #             filesize = os.path.getsize(os.path.join(answerdir, dirname, nam + "_.pdf"))
         #         break
         kkk = -9
         for i in os.listdir(answerdir):
@@ -976,11 +981,11 @@ def crawl_answer_detail(driver:webdriver):
             
             if len(article) > 0:
                 try:
-                    f=open(os.path.join(dircrea, nam[:3] + ".md"), 'w', encoding='utf-8')
+                    f=open(os.path.join(dircrea, nam[:3] + "_.md"), 'w', encoding='utf-8')
                     f.close()
                 except:
                     nam = nam[:len(nam)//2]
-                with open(os.path.join(dircrea, nam[:3] + ".md"), 'w', encoding='utf-8') as obj:
+                with open(os.path.join(dircrea, nam[:3] + "_.md"), 'w', encoding='utf-8') as obj:
                     obj.write("# "+ title+"\n\n")
                     if len(article) > 0:
                         obj.write(article + "\n\n\n")
