@@ -91,7 +91,9 @@ def edgeopen(driverpath):
     edge_options = EdgeOptions()
 
     # https://stackoverflow.com/questions/53039551/selenium-webdriver-modifying-navigator-webdriver-flag-to-prevent-selenium-detec
-    edge_options.add_experimental_option("excludeSwitches", ["enable-automation"])
+    edge_options.add_experimental_option(
+        "excludeSwitches", ["enable-automation"]
+    )
     edge_options.add_experimental_option("useAutomationExtension", False)
     edge_options.add_argument("lang=zh-CN,zh,zh-TW,en-US,en")
     edge_options.add_argument(
@@ -206,13 +208,19 @@ def crawl_article_links(driver: webdriver, username: str):
         for a in range(len(items)):
             introduce = items[a].get_attribute("data-zop")
             itemId = json.loads(introduce)
-            links = items[a].find_elements(By.TAG_NAME, "a")[0].get_attribute("href")
+            links = (
+                items[a]
+                .find_elements(By.TAG_NAME, "a")[0]
+                .get_attribute("href")
+            )
             # id = itemId['itemId']
             title = str(itemId["title"]).strip()
             all_article_detail[str(title)] = links  # article_detail + str(id)
         crawl_sleep(sleeptime)
     with open(
-        os.path.join(articledir, "article.txt"), "w", encoding="utf-%d" % (6 + 2)
+        os.path.join(articledir, "article.txt"),
+        "w",
+        encoding="utf-%d" % (6 + 2),
     ) as obj:
         for key, val in all_article_detail.items():
             obj.write(val + " " + key + "\n")
@@ -254,10 +262,16 @@ def crawl_answers_links(driver: webdriver, username: str):
             itemId = json.loads(introduce)
             id = itemId["itemId"]
             title = str(itemId["title"])
-            links = items[i].find_elements(By.TAG_NAME, "a")[0].get_attribute("href")
+            links = (
+                items[i]
+                .find_elements(By.TAG_NAME, "a")[0]
+                .get_attribute("href")
+            )
             all_answer_detail.append([links, str(title)])
         crawl_sleep(sleeptime)
-    with open(os.path.join(answerdir, "answers.txt"), "w", encoding="utf-8") as obj:
+    with open(
+        os.path.join(answerdir, "answers.txt"), "w", encoding="utf-8"
+    ) as obj:
         for links, title in all_answer_detail:
             obj.write(links + " " + title + "\n")
 
@@ -297,19 +311,29 @@ def crawl_think_links(driver: webdriver, username: str):
         # crawl answer one by one
         for i in range(len(items)):
             begin = now()
-            RichContent = items[i].find_element(By.CLASS_NAME, "RichContent-inner")
+            RichContent = items[i].find_element(
+                By.CLASS_NAME, "RichContent-inner"
+            )
             clockitem = items[i].find_element(By.CLASS_NAME, "ContentItem-time")
             try:
-                WebDriverWait(items[i], timeout=10).until(lambda d: len(d.text) > 2)
+                WebDriverWait(items[i], timeout=10).until(
+                    lambda d: len(d.text) > 2
+                )
             except:
                 driver.get(think_one + str(p))
                 WebDriverWait(driver, timeout=10).until(
                     lambda d: d.find_element(By.CLASS_NAME, "Pagination")
                 )
                 items = driver.find_elements(By.CLASS_NAME, "PinItem")
-                RichContent = items[i].find_element(By.CLASS_NAME, "RichContent-inner")
-                clockitem = items[i].find_element(By.CLASS_NAME, "ContentItem-time")
-                WebDriverWait(items[i], timeout=10).until(lambda d: len(d.text) > 2)
+                RichContent = items[i].find_element(
+                    By.CLASS_NAME, "RichContent-inner"
+                )
+                clockitem = items[i].find_element(
+                    By.CLASS_NAME, "ContentItem-time"
+                )
+                WebDriverWait(items[i], timeout=10).until(
+                    lambda d: len(d.text) > 2
+                )
             # clockspan = clockitem.find_element(By.TAG_NAME, 'span')
             clock = clockitem.text
             clock = clock[3 + 1 :].replace(":", "_")
@@ -322,7 +346,9 @@ def crawl_think_links(driver: webdriver, username: str):
                 WebDriverWait(items[i], timeout=10).until(
                     lambda d: d.find_element(By.CLASS_NAME, "RichContent-inner")
                 )
-                RichContent = items[i].find_element(By.CLASS_NAME, "RichContent-inner")
+                RichContent = items[i].find_element(
+                    By.CLASS_NAME, "RichContent-inner"
+                )
             except:
                 pass
             content = RichContent.find_element(By.CLASS_NAME, "RichText")
@@ -336,7 +362,9 @@ def crawl_think_links(driver: webdriver, username: str):
             text = content.text.strip()
             if len(text) != 0:
                 with open(
-                    os.path.join(dirthink, clock + ".txt"), "w", encoding="utf-8"
+                    os.path.join(dirthink, clock + ".txt"),
+                    "w",
+                    encoding="utf-8",
                 ) as obj:
                     obj.write(
                         text.replace("<br>", "\n").replace(
@@ -348,13 +376,17 @@ def crawl_think_links(driver: webdriver, username: str):
                         obj.write(itext + "\n")
                     # all_think_detail.append([text])
             try:
-                items[i].find_elements(By.CLASS_NAME, "Image-PreviewVague")[0].click()
+                items[i].find_elements(By.CLASS_NAME, "Image-PreviewVague")[
+                    0
+                ].click()
             except:
                 continue
             cnt = 0
             while True:
                 WebDriverWait(driver, timeout=10).until(
-                    lambda d: d.find_element(By.CLASS_NAME, "ImageGallery-Inner")
+                    lambda d: d.find_element(
+                        By.CLASS_NAME, "ImageGallery-Inner"
+                    )
                 )
                 img = driver.find_element(
                     By.CLASS_NAME, "ImageGallery-Inner"
@@ -371,7 +403,8 @@ def crawl_think_links(driver: webdriver, username: str):
                         continue
                 if response.status_code == 200:
                     with open(
-                        os.path.join(dirthink, clock + "_" + str(cnt) + ".jpg"), "wb"
+                        os.path.join(dirthink, clock + "_" + str(cnt) + ".jpg"),
+                        "wb",
                     ) as obj:
                         obj.write(response.content)
                     cnt += 1
@@ -381,7 +414,9 @@ def crawl_think_links(driver: webdriver, username: str):
                         By.CLASS_NAME, "ImageGallery-arrow-right"
                     )
                     if "disabled" in disable.get_attribute("class"):
-                        driver.find_element(By.CLASS_NAME, "ImageGallery-close").click()
+                        driver.find_element(
+                            By.CLASS_NAME, "ImageGallery-close"
+                        ).click()
                         break
                     else:
                         disable.click()
@@ -391,7 +426,11 @@ def crawl_think_links(driver: webdriver, username: str):
             end = now()
             print("爬取一篇想法耗时：", clock, round(end - begin, 3))
             logfp.write(
-                "爬取一篇想法耗时：" + clock + " " + str(round(end - begin, 3)) + "\n"
+                "爬取一篇想法耗时："
+                + clock
+                + " "
+                + str(round(end - begin, 3))
+                + "\n"
             )
         numberpage += 1
         # crawlsleep(600)
@@ -432,20 +471,26 @@ def parser_beautiful(innerHTML, article, number, dircrea, bk=False):
         else:
             cll = [c for c in chi.children]
         if tag_name in ["table", "tbody", "tr", "td", "u", "em"]:
-            article, number = parser_beautiful(chi, article, number, dircrea, bk)
+            article, number = parser_beautiful(
+                chi, article, number, dircrea, bk
+            )
         elif tag_name == "br":
             article += "\n"
         elif tag_name == "blockquote":
             art, number = parser_beautiful(chi, "", number, dircrea, bk)
             article += "<blockquote>\n" + art + "\n</blockquote>\n"
         elif tag_name == "p":
-            article, number = parser_beautiful(chi, article, number, dircrea, bk)
+            article, number = parser_beautiful(
+                chi, article, number, dircrea, bk
+            )
             article += "\n\n"
         # elif tag_name=="br":
         #     article += "<br>\n"
         elif tag_name in ["h1", "h2", "h3", "h4", "h5", "h6"]:
             article += "#" * int(tag_name[-1]) + " "
-            article, number = parser_beautiful(chi, article, number, dircrea, bk)
+            article, number = parser_beautiful(
+                chi, article, number, dircrea, bk
+            )
             article += "\n\n"
         elif tag_name == "span":
             datatex = None
@@ -466,10 +511,14 @@ def parser_beautiful(innerHTML, article, number, dircrea, bk=False):
                     else:
                         article += "$" + content + "$"
             else:
-                article, number = parser_beautiful(chi, article, number, dircrea, bk)
+                article, number = parser_beautiful(
+                    chi, article, number, dircrea, bk
+                )
                 # article += nod.text
         elif tag_name == "u":
-            article, number = parser_beautiful(chi, article, number, dircrea, bk)
+            article, number = parser_beautiful(
+                chi, article, number, dircrea, bk
+            )
         elif tag_name == "a":
             linksite = None
             if "href" in chi.attrs.keys():
@@ -486,7 +535,9 @@ def parser_beautiful(innerHTML, article, number, dircrea, bk=False):
                     article += "\n\n[" + chi.text + "]" + "(" + linksite + ")"
         elif tag_name == "b" or tag_name == "strong":
             if len(cll) > 1:
-                article, number = parser_beautiful(chi, article, number, dircrea, True)
+                article, number = parser_beautiful(
+                    chi, article, number, dircrea, True
+                )
             else:
                 txt = chi.text
                 while len(txt) > 0 and txt[-1] == " ":
@@ -515,9 +566,13 @@ def parser_beautiful(innerHTML, article, number, dircrea, bk=False):
                     except:
                         continue
                 if response.status_code == 200:
-                    article += """ <img src="%d.jpg" width="100%%"/> \n\n""" % number
+                    article += (
+                        """ <img src="%d.jpg" width="100%%"/> \n\n""" % number
+                    )
                     # article += '''<img src="%d.jpg"/>'''%number
-                    with open(os.path.join(dircrea, str(number) + ".jpg"), "wb") as obj:
+                    with open(
+                        os.path.join(dircrea, str(number) + ".jpg"), "wb"
+                    ) as obj:
                         obj.write(response.content)
                     number += 1
                     crawl_sleep(sleeptime)
@@ -531,9 +586,13 @@ def parser_beautiful(innerHTML, article, number, dircrea, bk=False):
                         if len(lan) > 0:
                             if "language-" in lan[0]:
                                 language = lan[0].split("-")[-1]
-                    article += "\n\n```%s []\n" % language + i.text + "\n```\n\n"
+                    article += (
+                        "\n\n```%s []\n" % language + i.text + "\n```\n\n"
+                    )
             else:
-                article, number = parser_beautiful(chi, article, number, dircrea, bk)
+                article, number = parser_beautiful(
+                    chi, article, number, dircrea, bk
+                )
                 article += "\n\n"
     if bk:
         article += "**"
@@ -635,9 +694,13 @@ def recursion(nod, article, number, driver, dircrea, bk=False):
         # elif tag_name=='td':
         #     article += nod.text
         elif tag_name in ["table", "tbody", "tr", "td", "u"]:
-            p_childNodes = driver.execute_script("return arguments[0].childNodes;", nod)
+            p_childNodes = driver.execute_script(
+                "return arguments[0].childNodes;", nod
+            )
             for pnode in p_childNodes:
-                article, number = recursion(pnode, article, number, driver, dircrea, bk)
+                article, number = recursion(
+                    pnode, article, number, driver, dircrea, bk
+                )
         elif tag_name == "p":
             try:
                 p_childNodes = driver.execute_script(
@@ -678,9 +741,13 @@ def recursion(nod, article, number, driver, dircrea, bk=False):
                     except:
                         continue
                 if response.status_code == 200:
-                    article += """ <img src="%d.jpg" width="100%%"/> """ % number
+                    article += (
+                        """ <img src="%d.jpg" width="100%%"/> """ % number
+                    )
                     # article += '''<img src="%d.jpg"/>'''%number
-                    with open(os.path.join(dircrea, str(number) + ".jpg"), "wb") as obj:
+                    with open(
+                        os.path.join(dircrea, str(number) + ".jpg"), "wb"
+                    ) as obj:
                         obj.write(response.content)
                     number += 1
                     crawl_sleep(sleeptime)
@@ -695,7 +762,9 @@ def crawl_article_detail(driver: webdriver):
             shutil.rmtree(os.path.join(articledir, i))
         except:
             pass
-    with open(os.path.join(articledir, "article.txt"), "r", encoding="utf-8") as obj:
+    with open(
+        os.path.join(articledir, "article.txt"), "r", encoding="utf-8"
+    ) as obj:
         for i in obj.readlines():
             i = i.strip()
             while len(i) > 0 and i[0] == " ":
@@ -738,9 +807,7 @@ def crawl_article_detail(driver: webdriver):
             .replace("：", "_冒号_")
             .replace("、", "_顿号_")
         )
-        temp_name = (
-            nam  # str(np.random.randint(999999999)) + str(np.random.randint(999999999))
-        )
+        temp_name = nam  # str(np.random.randint(999999999)) + str(np.random.randint(999999999))
         if len(temp_name) > 100:
             temp_name = temp_name[:100]
         while temp_name != "" and temp_name[-1] == " ":
@@ -783,7 +850,9 @@ def crawl_article_detail(driver: webdriver):
         )
         footer = driver.find_element(By.TAG_NAME, "html")
         scroll_origin = ScrollOrigin.from_element(footer, 0, -60)
-        ActionChains(driver).scroll_from_origin(scroll_origin, 0, -100000).perform()
+        ActionChains(driver).scroll_from_origin(
+            scroll_origin, 0, -100000
+        ).perform()
         for i in range(18):
             try:
                 ActionChains(driver).scroll_from_origin(
@@ -827,9 +896,13 @@ def crawl_article_detail(driver: webdriver):
             # for nod in article_childNodes:
             # article, number = recursion(nod, article, number, driver, dircrea)
 
-            inner = driver.execute_script("return arguments[0].innerHTML;", richtext)
+            inner = driver.execute_script(
+                "return arguments[0].innerHTML;", richtext
+            )
             innerHTML = BeautifulSoup(inner, "html.parser")
-            article, number = parser_beautiful(innerHTML, article, number, dircrea)
+            article, number = parser_beautiful(
+                innerHTML, article, number, dircrea
+            )
 
             article = (
                 article.replace("修改\n", "")
@@ -841,18 +914,26 @@ def crawl_article_detail(driver: webdriver):
             )
             tle = titletext.text
             article += (
-                "<br>\n\n[" + driver.current_url + "](" + driver.current_url + ")<br>\n"
+                "<br>\n\n["
+                + driver.current_url
+                + "]("
+                + driver.current_url
+                + ")<br>\n"
             )
             if len(article) > 0:
                 try:
                     f = open(
-                        os.path.join(dircrea, nam[:3] + "_.md"), "w", encoding="utf-8"
+                        os.path.join(dircrea, nam[:3] + "_.md"),
+                        "w",
+                        encoding="utf-8",
                     )
                     f.close()
                 except:
                     nam = nam[: len(nam) // 2]
                 with open(
-                    os.path.join(dircrea, nam[:3] + "_.md"), "w", encoding="utf-8"
+                    os.path.join(dircrea, nam[:3] + "_.md"),
+                    "w",
+                    encoding="utf-8",
                 ) as obj:
                     obj.write("# " + tle + "\n\n")
                     if len(article) > 0:
@@ -860,9 +941,9 @@ def crawl_article_detail(driver: webdriver):
                     obj.write("\n\n\n")
 
         # article to pdf
-        clocktxt = driver.find_element(By.CLASS_NAME, "Post-NormalMain").find_element(
-            By.CLASS_NAME, "ContentItem-time"
-        )
+        clocktxt = driver.find_element(
+            By.CLASS_NAME, "Post-NormalMain"
+        ).find_element(By.CLASS_NAME, "ContentItem-time")
         crawl_sleep(1)
         url = driver.current_url
         driver.execute_script(
@@ -876,7 +957,9 @@ def crawl_article_detail(driver: webdriver):
             % url
         )
         clock = clocktxt.text[3 + 1 :].replace(":", "_")
-        pagetopdf(driver, dircrea, temp_name, nam, articledir, url, Created=clock)
+        pagetopdf(
+            driver, dircrea, temp_name, nam, articledir, url, Created=clock
+        )
 
         crawl_sleep(sleeptime)
 
@@ -889,12 +972,18 @@ def crawl_article_detail(driver: webdriver):
         end = now()
         print("爬取一篇article耗时：", title, round(end - begin, 3))
         logfp.write(
-            "爬取一篇article耗时：" + title + " " + str(round(end - begin, 3)) + "\n"
+            "爬取一篇article耗时："
+            + title
+            + " "
+            + str(round(end - begin, 3))
+            + "\n"
         )
         numberpage += 1
         # crawlsleep(600)
     allend = now()
-    print("平均爬取一篇article耗时：", round((allend - allbegin) / numberpage, 3))
+    print(
+        "平均爬取一篇article耗时：", round((allend - allbegin) / numberpage, 3)
+    )
     logfp.write(
         "平均爬取一篇article耗时："
         + str(round((allend - allbegin) / numberpage, 3))
@@ -933,7 +1022,9 @@ def pagetopdf(driver, dircrea, temp_name, nam, destdir, url, Created=""):
 
     # driver.execute_script('window.print();')
     clock = Created  # clocktxt.text[3+1:].replace(":", "_")
-    with open(os.path.join(dircrea, clock + ".txt"), "w", encoding="utf-8") as obj:
+    with open(
+        os.path.join(dircrea, clock + ".txt"), "w", encoding="utf-8"
+    ) as obj:
         obj.write(clock + "\n")
         obj.write(url)
 
@@ -945,11 +1036,16 @@ def pagetopdf(driver, dircrea, temp_name, nam, destdir, url, Created=""):
     except:
         pass
     try:
-        os.rename(dircrea, os.path.join(destdir, clock + "_" + nam + "_" + address))
+        os.rename(
+            dircrea, os.path.join(destdir, clock + "_" + nam + "_" + address)
+        )
     except Exception as e0:
         crawl_sleep(3 + addtime)
         try:
-            os.rename(dircrea, os.path.join(destdir, clock + "_" + nam + "_" + address))
+            os.rename(
+                dircrea,
+                os.path.join(destdir, clock + "_" + nam + "_" + address),
+            )
         except Exception as e1:
             pass
 
@@ -962,7 +1058,9 @@ def crawl_answer_detail(driver: webdriver):
             shutil.rmtree(os.path.join(answerdir, i))
         except:
             pass
-    with open(os.path.join(answerdir, "answers.txt"), "r", encoding="utf-8") as obj:
+    with open(
+        os.path.join(answerdir, "answers.txt"), "r", encoding="utf-8"
+    ) as obj:
         for i in obj.readlines():
             i = i.strip()
             while len(i) > 0 and i[0] == " ":
@@ -1006,9 +1104,7 @@ def crawl_answer_detail(driver: webdriver):
         )
         if len(nam) > 100:
             nam = nam[:100]
-        temp_name = (
-            nam  # str(np.random.randint(999999999)) + str(np.random.randint(999999999))
-        )
+        temp_name = nam  # str(np.random.randint(999999999)) + str(np.random.randint(999999999))
         while temp_name != "" and temp_name[-1] == " ":
             temp_name = temp_name[:-1]
         while temp_name != "" and temp_name[0] == " ":
@@ -1066,7 +1162,9 @@ def crawl_answer_detail(driver: webdriver):
         )
         footer = driver.find_element(By.TAG_NAME, "html")
         scroll_origin = ScrollOrigin.from_element(footer, 0, 0)
-        ActionChains(driver).scroll_from_origin(scroll_origin, 0, -100000).perform()
+        ActionChains(driver).scroll_from_origin(
+            scroll_origin, 0, -100000
+        ).perform()
         for i in range(18):
             try:
                 ActionChains(driver).scroll_from_origin(
@@ -1080,20 +1178,28 @@ def crawl_answer_detail(driver: webdriver):
                 except:
                     pass
             crawl_sleep(0.8)
-        ActionChains(driver).scroll_from_origin(scroll_origin, 0, -100000).perform()
+        ActionChains(driver).scroll_from_origin(
+            scroll_origin, 0, -100000
+        ).perform()
         article = ""
         number = 0
         try:
-            QuestionRichText = driver.find_element(By.CLASS_NAME, "QuestionRichText")
+            QuestionRichText = driver.find_element(
+                By.CLASS_NAME, "QuestionRichText"
+            )
             button = QuestionRichText.find_element(
                 By.CLASS_NAME, "QuestionRichText-more"
             )
             WebDriverWait(driver, timeout=20).until(
-                EC.element_to_be_clickable((By.CLASS_NAME, "QuestionRichText-more"))
+                EC.element_to_be_clickable(
+                    (By.CLASS_NAME, "QuestionRichText-more")
+                )
             )
             crawl_sleep(max(2, sleeptime))
             button.click()
-            question_RichText = QuestionRichText.find_element(By.CLASS_NAME, "RichText")
+            question_RichText = QuestionRichText.find_element(
+                By.CLASS_NAME, "RichText"
+            )
             # question_childNodes = driver.execute_script("return arguments[0].childNodes;", question_RichText)
 
             article += "# question： <br>\n"
@@ -1104,7 +1210,9 @@ def crawl_answer_detail(driver: webdriver):
                 "return arguments[0].innerHTML;", question_RichText
             )
             innerHTML = BeautifulSoup(inner, "html.parser")
-            article, number = parser_beautiful(innerHTML, article, number, dircrea)
+            article, number = parser_beautiful(
+                innerHTML, article, number, dircrea
+            )
         except:
             pass
         article += "<br>\n\n\n# answer： <br>\n"
@@ -1148,11 +1256,15 @@ def crawl_answer_detail(driver: webdriver):
 
         Created = "not found"
         Modified = "not found"
-        QuestionAnswer = driver.find_element(By.CLASS_NAME, "QuestionAnswer-content")
+        QuestionAnswer = driver.find_element(
+            By.CLASS_NAME, "QuestionAnswer-content"
+        )
         richtext = QuestionAnswer.find_element(
             By.CLASS_NAME, "CopyrightRichText-richText"
         )
-        Createdtime = QuestionAnswer.find_element(By.CLASS_NAME, "ContentItem-time")
+        Createdtime = QuestionAnswer.find_element(
+            By.CLASS_NAME, "ContentItem-time"
+        )
         Created = Createdtime.text[4:].replace(":", "_").replace(".", "_")
 
         if MarkDown_FORMAT:
@@ -1172,9 +1284,13 @@ def crawl_answer_detail(driver: webdriver):
             # for nod in answer_childNodes:
             #     article, number = recursion(nod, article, number, driver, dircrea)
 
-            inner = driver.execute_script("return arguments[0].innerHTML;", richtext)
+            inner = driver.execute_script(
+                "return arguments[0].innerHTML;", richtext
+            )
             innerHTML = BeautifulSoup(inner, "html.parser")
-            article, number = parser_beautiful(innerHTML, article, number, dircrea)
+            article, number = parser_beautiful(
+                innerHTML, article, number, dircrea
+            )
 
             article = (
                 article.replace("修改\n", "")
@@ -1201,13 +1317,17 @@ def crawl_answer_detail(driver: webdriver):
             if len(article) > 0:
                 try:
                     f = open(
-                        os.path.join(dircrea, nam[:3] + "_.md"), "w", encoding="utf-8"
+                        os.path.join(dircrea, nam[:3] + "_.md"),
+                        "w",
+                        encoding="utf-8",
                     )
                     f.close()
                 except:
                     nam = nam[: len(nam) // 2]
                 with open(
-                    os.path.join(dircrea, nam[:3] + "_.md"), "w", encoding="utf-8"
+                    os.path.join(dircrea, nam[:3] + "_.md"),
+                    "w",
+                    encoding="utf-8",
                 ) as obj:
                     obj.write("# " + title + "\n\n")
                     if len(article) > 0:
@@ -1216,12 +1336,18 @@ def crawl_answer_detail(driver: webdriver):
                     obj.write("Modified: " + Modified + "\n")
 
         # article to pdf
-        pagetopdf(driver, dircrea, temp_name, nam, answerdir, url, Created=Created)
+        pagetopdf(
+            driver, dircrea, temp_name, nam, answerdir, url, Created=Created
+        )
         crawl_sleep(sleeptime)
         end = now()
         print("爬取一篇回答耗时：", title, round(end - begin, 3))
         logfp.write(
-            "爬取一篇回答耗时：" + title + " " + str(round(end - begin, 3)) + "\n"
+            "爬取一篇回答耗时："
+            + title
+            + " "
+            + str(round(end - begin, 3))
+            + "\n"
         )
         numberpage += 1
         # crawlsleep(600)
@@ -1250,7 +1376,9 @@ def login_loadsavecookie():
     except Exception as e:
         if os.path.exists(cookie_path):
             os.remove(cookie_path)
-            print("浏览器cookie失效了，删除了之前的cookie，需要再次登录并保存cookie。")
+            print(
+                "浏览器cookie失效了，删除了之前的cookie，需要再次登录并保存cookie。"
+            )
         else:
             print("需要登陆并保存cookie，下次就不用登录了。")
         driver = login(driver)
@@ -1272,7 +1400,9 @@ def login_loadsavecookie():
 
 
 def downloaddriver():
-    url = "https://msedgedriver.azureedge.net/116.0.1938.62/edgedriver_win64.zip"
+    url = (
+        "https://msedgedriver.azureedge.net/116.0.1938.62/edgedriver_win64.zip"
+    )
     if not os.path.exists(driverpath):
         ret = requests.get(
             "https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver/"
@@ -1306,11 +1436,14 @@ def downloaddriver():
                 for i in f:
                     if "driver" in i and ".exe" in i:
                         try:
-                            shutil.move(os.path.join(r, i), os.path.join(nth, i))
+                            shutil.move(
+                                os.path.join(r, i), os.path.join(nth, i)
+                            )
                         except:
                             pass
                         os.rename(
-                            os.path.join(nth, i), os.path.join(nth, "msedgedriver.exe")
+                            os.path.join(nth, i),
+                            os.path.join(nth, "msedgedriver.exe"),
                         )
                         kk = -6
                         break
@@ -1423,7 +1556,9 @@ if __name__ == "__main__":
         help=r"crawl article, 是否爬取知乎的文章, 保存到pdf、markdown以及相关图片等，已经爬取过的不会重复爬取，\
                     断了再次爬取的话，可以配置到--links_scratch，事先保存好website",
     )
-    parser.add_argument("--MarkDown", action="store_true", help=r"save MarkDown")
+    parser.add_argument(
+        "--MarkDown", action="store_true", help=r"save MarkDown"
+    )
     parser.add_argument(
         "--links_scratch",
         action="store_true",
