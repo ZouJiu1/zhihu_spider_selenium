@@ -1456,6 +1456,7 @@ def load_driver():
                 if kk < 0:
                     break
 
+
 # Define a wrapper function to call exec_login_and_load_cookie() and store the return values in global variables
 def try_login():
     global driver, login_user
@@ -1463,21 +1464,17 @@ def try_login():
         load_driver()
         driver, login_user = exec_login_and_load_cookie()
     except Exception as e:
-        os.remove(os.path.join(abspath, "msedgedriver", "msedgedriver.exe"))
-        load_driver()
-        driver, login_user = exec_login_and_load_cookie()
+        print(f"Error during initial login attempt: {e}")
+        try:
+            os.remove(os.path.join(abspath, "msedgedriver", "msedgedriver.exe"))
+            load_driver()
+            driver, login_user = exec_login_and_load_cookie()
+        except Exception as e:
+            print(f"Error during second login attempt: {e}")
+            exit(1)
 
 
-def run_zhihu_crawl(username:str):
-    # #crawl articles links
-    # try:
-    #     load_driver()
-    #     driver, username = exec_login_and_load_cookie()
-    # except Exception as e:
-    #     os.remove(os.path.join(abspath, "msedgedriver", "msedgedriver.exe"))
-    #     load_driver()
-    #     driver, username = exec_login_and_load_cookie()
-
+def run_zhihu_crawl(username: str):
     # #crawl think links
     if crawl_think:
         crawl_think_links(driver, username)
@@ -1568,9 +1565,14 @@ def parse_arguments():
     parser.add_argument(
         "--target_crawl",
         type=str,
-        help=r"specify the target to crawl, 指定要爬取的用户名,如: --target_crawl=xxx",
+        help=(
+            "specify the target to crawl, 指定要爬取的用户名,如: --target_crawl=xxx, "
+            "不设置即为爬登录用户,注意用户名是url里面的结尾字符串,如: "
+            "https://www.zhihu.com/people/someone"
+        ),
     )
     return parser.parse_args()
+
 
 def prepare_directories():
     global driverpath, savepath, cookiedir, thinkdir, answerdir, articledir, logdir, logfile, logging, cookie_path
@@ -1589,6 +1591,7 @@ def prepare_directories():
     os.makedirs(logdir, exist_ok=True)
     logging = open(logfile, "w", encoding="utf-8")
     cookie_path = os.path.join(cookiedir, "cookie_zhihu.pkl")
+
 
 def main():
     prepare_directories()
