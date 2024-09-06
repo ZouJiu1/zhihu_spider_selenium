@@ -38,25 +38,40 @@ sys.path.append(abspath)
 # sys.path.append(wkhtmltopdf_path)
 from thinkdeal import *
 
-def save_cookie(driverkkk, path):
+def save_cookie(driver, path):
     #https://stackoverflow.com/questions/45417335/python-use-cookie-to-login-with-selenium
-    with open(path, 'wb') as filehandler:
-        pickle.dump(driverkkk.get_cookies(), filehandler)
+    try:
+        cookies = driver.get_cookies()
+        if not cookies:
+            raise ValueError("No cookies found in the driver.")
+        with open(path, 'wb') as filehandler:
+            pickle.dump(cookies, filehandler)
+    except Exception as e:
+        print(f"An error occurred while saving cookies: {e}")
 
-def load_cookie(driverkkk, path):
+def load_cookie(driver, path):
     #https://stackoverflow.com/questions/45417335/python-use-cookie-to-login-with-selenium
-     with open(path, 'rb') as cookiesfile:
-         cookies = pickle.load(cookiesfile)
-         for cookie in cookies:
-             driverkkk.add_cookie(cookie)
+    try:
+        with open(path, 'rb') as cookiesfile:
+            cookies = pickle.load(cookiesfile)
+            if not cookies:
+                raise ValueError("No cookies found in the file.")
+            for cookie in cookies:
+                driver.add_cookie(cookie)
+    except FileNotFoundError:
+        print(f"Cookie file not found: {path}")
+    except pickle.UnpicklingError:
+        print(f"Error unpickling the cookie file: {path}")
+    except Exception as e:
+        print(f"An error occurred while loading cookies: {e}")
 
-def crawlsleep(times):
+def crawl_sleep(times):
     time.sleep(times)
 
 def now():
     return time.time()
 
-def nowtime():
+def time_now():
     nowtm = datetime.fromtimestamp(time.time()).isoformat().replace(":", "_")
     return nowtm
 
@@ -137,12 +152,11 @@ def login(driver):
     return driver
 
 def crawl_article_links(driver:webdriver, username:str):
-    #crawl articles links
-    articles = r'https://www.zhihu.com/people/zoujiu1/posts'
-    articles_one = r'https://www.zhihu.com/people/zoujiu1/posts?page='
-    article_detail = r'https://zhuanlan.zhihu.com/p/'
-
-    driver.get(articles.replace("zoujiu1", username))
+    # crawl articles links
+    base_url = "https://www.zhihu.com/people"
+    articles_link = f"{base_url}/{username}/posts"
+    articles_one = f"{base_url}/{username}/posts?page="
+    # article_detail = r'https://zhuanlan.zhihu.com/p/'
     try:
         WebDriverWait(driver, timeout=10).until(lambda d: d.find_element(By.CLASS_NAME, "Pagination"))
         pages = driver.find_elements(By.CLASS_NAME, 'PaginationButton')[-2]
@@ -156,14 +170,14 @@ def crawl_article_links(driver:webdriver, username:str):
             pages = pages[-2]
             assert isinstance(int(pages.text), int)
             maxpages = int(pages.text)
-    
+
     all_article_detail = {}
-    #how many pages of articles
+    # how many pages of articles
     for p in range(1, maxpages + 1):
         driver.get(articles_one + str(p))
         WebDriverWait(driver, timeout=10).until(lambda d: d.find_element(By.CLASS_NAME, "ArticleItem"))
         items = driver.find_elements(By.CLASS_NAME, "ArticleItem")
-        #crawl article one by one
+        # crawl article one by one
         for a in range(len(items)):
             introduce = items[a].get_attribute("data-zop")
             itemId = json.loads(introduce)
@@ -171,7 +185,7 @@ def crawl_article_links(driver:webdriver, username:str):
             # id = itemId['itemId']
             title = str(itemId['title']).strip()
             all_article_detail[str(title)] = links #article_detail + str(id)
-        crawlsleep(sleeptime)
+        crawl_sleep(sleeptime)
     with open(os.path.join(articledir, 'article.txt'), 'w', encoding='utf-%d'%(6+2)) as obj:
         for key, val in all_article_detail.items():
             obj.write(val + " " + key + '\n')
@@ -210,7 +224,7 @@ def crawl_answers_links(driver:webdriver, username:str):
             title = str(itemId['title'])
             links = items[i].find_elements(By.TAG_NAME, 'a')[0].get_attribute('href')
             all_answer_detail.append([links, str(title)])
-        crawlsleep(sleeptime)
+        crawl_sleep(sleeptime)
     with open(os.path.join(answerdir, 'answers.txt'), 'w', encoding='utf-8') as obj:
         for links, title in all_answer_detail:
             obj.write(links + " " + title + '\n')
@@ -307,7 +321,7 @@ def crawl_think_links(driver:webdriver, username:str):
                     with open(os.path.join(dirthink, clock + "_" + str(cnt) + '.jpg'), 'wb') as obj:
                         obj.write(response.content)
                     cnt += 1
-                    crawlsleep(sleeptime)
+                    crawl_sleep(sleeptime)
                 try:
                     disable = driver.find_element(By.CLASS_NAME, 'ImageGallery-arrow-right')
                     if 'disabled' in disable.get_attribute('class'):
@@ -317,7 +331,7 @@ def crawl_think_links(driver:webdriver, username:str):
                         disable.click()
                 except:
                     break
-            crawlsleep(sleeptime)
+            crawl_sleep(sleeptime)
             end = now()
             print("爬取一篇想法耗时：", clock,  round(end - begin, 3))
             logfp.write("爬取一篇想法耗时：" +clock + " "+ str(round(end - begin, 3)) + "\n")
@@ -440,7 +454,7 @@ def parser_beautiful(innerHTML, article, number, dircrea, bk=False):
                     with open(os.path.join(dircrea, str(number) + '.jpg'), 'wb') as obj:
                         obj.write(response.content)
                     number += 1
-                    crawlsleep(sleeptime)
+                    crawl_sleep(sleeptime)
         elif tag_name=="div":
             prenode = chi.find_all('code')
             if len(prenode) > 0:
@@ -580,7 +594,7 @@ def recursion(nod, article, number, driver, dircrea, bk=False):
                     with open(os.path.join(dircrea, str(number) + '.jpg'), 'wb') as obj:
                         obj.write(response.content)
                     number += 1
-                    crawlsleep(sleeptime)
+                    crawl_sleep(sleeptime)
     return article, number
 
 def crawl_article_detail(driver:webdriver):
@@ -666,7 +680,7 @@ def crawl_article_detail(driver:webdriver):
                     ActionChains(driver).scroll_from_origin(scroll_origin, 0, -scrollHeight//18).perform()
                 except:
                     pass
-            crawlsleep(0.8)
+            crawl_sleep(0.8)
         #remove noneed element
         try:
             driver.execute_script('''document.getElementsByClassName("Post-Sub")[0].remove();''')
@@ -713,7 +727,7 @@ def crawl_article_detail(driver:webdriver):
 
         # article to pdf 
         clocktxt = driver.find_element(By.CLASS_NAME, "Post-NormalMain").find_element(By.CLASS_NAME, "ContentItem-time")
-        crawlsleep(1)
+        crawl_sleep(1)
         url = driver.current_url
         driver.execute_script("const para = document.createElement(\"h2\"); \
                                 const br = document.createElement(\"br\"); \
@@ -726,7 +740,7 @@ def crawl_article_detail(driver:webdriver):
         clock = clocktxt.text[3+1:].replace(":", "_")
         pagetopdf(driver, dircrea, temp_name, nam, articledir, url, Created=clock)
         
-        crawlsleep(sleeptime)
+        crawl_sleep(sleeptime)
 
         #https://stackoverflow.com/questions/23359083/how-to-convert-webpage-into-pdf-by-using-python
         #https://github.com/JazzCore/python-pdfkit
@@ -786,7 +800,7 @@ def pagetopdf(driver, dircrea, temp_name, nam, destdir, url, Created=""):
     try:
         os.rename(dircrea, os.path.join(destdir, clock + "_" + nam + "_" + address))
     except Exception as e0:
-        crawlsleep(3+addtime)
+        crawl_sleep(3+addtime)
         try:
             os.rename(dircrea, os.path.join(destdir, clock + "_" + nam + "_" + address))
         except Exception as e1:
@@ -878,7 +892,8 @@ def crawl_answer_detail(driver:webdriver):
         
         #get article text
         driver.get(website)
-        WebDriverWait(driver, timeout=10).until(lambda d: d.find_element(By.CLASS_NAME, "AnswerItem-editButtonText"))
+        # only article poster got permit to edit his own article
+        # WebDriverWait(driver, timeout=10).until(lambda d: d.find_element(By.CLASS_NAME, "AnswerItem-editButtonText"))
 
         #https://stackoverflow.com/questions/61877719/how-to-get-current-scroll-height-in-selenium-python
         scrollHeight = driver.execute_script('''return document.getElementsByClassName("QuestionAnswer-content")[0].scrollHeight''')
@@ -893,7 +908,7 @@ def crawl_answer_detail(driver:webdriver):
                     ActionChains(driver).scroll_from_origin(scroll_origin, 0, -scrollHeight//18).perform()
                 except:
                     pass
-            crawlsleep(0.8)
+            crawl_sleep(0.8)
         ActionChains(driver).scroll_from_origin(scroll_origin, 0, -100000).perform()
         article = ""
         number = 0
@@ -901,7 +916,7 @@ def crawl_answer_detail(driver:webdriver):
             QuestionRichText = driver.find_element(By.CLASS_NAME, "QuestionRichText")
             button = QuestionRichText.find_element(By.CLASS_NAME, "QuestionRichText-more")
             WebDriverWait(driver, timeout=20).until(EC.element_to_be_clickable((By.CLASS_NAME, "QuestionRichText-more")))
-            crawlsleep(max(2, sleeptime))
+            crawl_sleep(max(2, sleeptime))
             button.click()
             question_RichText = QuestionRichText.find_element(By.CLASS_NAME, "RichText")
             # question_childNodes = driver.execute_script("return arguments[0].childNodes;", question_RichText)
@@ -994,7 +1009,7 @@ def crawl_answer_detail(driver:webdriver):
 
         # article to pdf
         pagetopdf(driver, dircrea, temp_name, nam, answerdir, url, Created=Created)
-        crawlsleep(sleeptime)
+        crawl_sleep(sleeptime)
         end = now()
         print("爬取一篇回答耗时：", title, round(end - begin, 3))
         logfp.write("爬取一篇回答耗时：" +title+" "+ str(round(end - begin, 3)) + "\n")
@@ -1029,9 +1044,9 @@ def login_loadsavecookie():
         driver.find_element(By.ID, 'Popover15-toggle').click()
         driver.find_element(By.CLASS_NAME, 'Menu-item').click()
     except:
-        crawlsleep(6)
+        crawl_sleep(6)
         driver.get(r"https://www.zhihu.com/")
-        crawlsleep(3)
+        crawl_sleep(3)
         driver.find_element(By.ID, 'Popover15-toggle').click()
         driver.find_element(By.CLASS_NAME, 'Menu-item').click()
     url = driver.current_url
@@ -1089,37 +1104,37 @@ def zhihu():
     # #crawl think links
     if crawl_think:
         crawl_think_links(driver, username)
-        logfp.write(nowtime() + ', 想法爬取已经好了的\n')
+        logfp.write(time_now() + ', 想法爬取已经好了的\n')
 
     # #crawl articles links
     if crawl_article:
         if not os.path.exists(os.path.join(articledir, 'article.txt')):
             crawl_article_links(driver, username)
-            logfp.write(nowtime() + ', article weblink爬取已经好了的\n')
+            logfp.write(time_now() + ', article weblink爬取已经好了的\n')
         else:
             if crawl_links_scratch:
-                os.rename(os.path.join(articledir, 'article.txt'), os.path.join(articledir, 'article_%s.txt'%nowtime()))
+                os.rename(os.path.join(articledir, 'article.txt'), os.path.join(articledir, 'article_%s.txt'%time_now()))
                 crawl_article_links(driver, username)
-                logfp.write(nowtime() + ', article weblink爬取已经好了的\n')
+                logfp.write(time_now() + ', article weblink爬取已经好了的\n')
             else:
                 pass
         crawl_article_detail(driver)
-        logfp.write(nowtime() + ', article爬取已经好了的\n')
+        logfp.write(time_now() + ', article爬取已经好了的\n')
         
     # #crawl answers links
     if crawl_answer:
         if not os.path.exists(os.path.join(answerdir, 'answers.txt')):
             crawl_answers_links(driver, username)
-            logfp.write(nowtime() + ', 回答 weblink爬取已经好了的\n')
+            logfp.write(time_now() + ', 回答 weblink爬取已经好了的\n')
         else:
             if crawl_links_scratch:
-                os.rename(os.path.join(answerdir, 'answers.txt'), os.path.join(answerdir, 'answers_%s.txt'%nowtime()))
+                os.rename(os.path.join(answerdir, 'answers.txt'), os.path.join(answerdir, 'answers_%s.txt'%time_now()))
                 crawl_answers_links(driver, username)
-                logfp.write(nowtime() + ', 回答 weblink爬取已经好了的\n')
+                logfp.write(time_now() + ', 回答 weblink爬取已经好了的\n')
             else:
                 pass
         crawl_answer_detail(driver)
-        logfp.write(nowtime() + ', 回答爬取已经好了的\n')
+        logfp.write(time_now() + ', 回答爬取已经好了的\n')
             
     driver.quit()
 
@@ -1132,7 +1147,7 @@ if __name__ == "__main__":
     answerdir = os.path.join(savepath, 'answer')
     articledir = os.path.join(savepath, 'article')
     logdir = os.path.join(savepath, 'log')
-    logfile = os.path.join(logdir, nowtime() + '_log.txt')
+    logfile = os.path.join(logdir, time_now() + '_log.txt')
     os.makedirs(cookiedir, exist_ok=True)
     os.makedirs(thinkdir,  exist_ok=True)
     os.makedirs(answerdir,    exist_ok=True)
