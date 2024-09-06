@@ -1365,7 +1365,7 @@ def crawl_answer_detail(driver: webdriver):
     )
 
 
-def login_loadsavecookie():
+def exec_login_and_load_cookie():
     website = r"https://www.zhihu.com/signin"
 
     # login and save cookies of zhihu
@@ -1405,7 +1405,7 @@ def login_loadsavecookie():
 
 
 # `pip install webdriver-manager`  can make this easier
-def download_driver():
+def load_driver():
     url = (
         "https://msedgedriver.azureedge.net/116.0.1938.62/edgedriver_win64.zip"
     )
@@ -1456,16 +1456,27 @@ def download_driver():
                 if kk < 0:
                     break
 
-
-def run_zhihu_crawl():
-    # #crawl articles links
+# Define a wrapper function to call exec_login_and_load_cookie() and store the return values in global variables
+def try_login():
+    global driver, login_user
     try:
-        download_driver()
-        driver, username = login_loadsavecookie()
+        load_driver()
+        driver, login_user = exec_login_and_load_cookie()
     except Exception as e:
         os.remove(os.path.join(abspath, "msedgedriver", "msedgedriver.exe"))
-        download_driver()
-        driver, username = login_loadsavecookie()
+        load_driver()
+        driver, login_user = exec_login_and_load_cookie()
+
+
+def run_zhihu_crawl(username:str):
+    # #crawl articles links
+    # try:
+    #     load_driver()
+    #     driver, username = exec_login_and_load_cookie()
+    # except Exception as e:
+    #     os.remove(os.path.join(abspath, "msedgedriver", "msedgedriver.exe"))
+    #     load_driver()
+    #     driver, username = exec_login_and_load_cookie()
 
     # #crawl think links
     if crawl_think:
@@ -1511,25 +1522,7 @@ def run_zhihu_crawl():
     driver.quit()
 
 
-def main():
-    global driverpath, savepath, cookiedir, thinkdir, answerdir, articledir, logdir, logfile, logging, cookie_path
-    # version four.one_zero.zero
-    driverpath = os.path.join(abspath, "msedgedriver\msedgedriver.exe")
-    savepath = deepcopy(abspath)
-    cookiedir = os.path.join(savepath, "cookie")
-    thinkdir = os.path.join(savepath, "think")
-    answerdir = os.path.join(savepath, "answer")
-    articledir = os.path.join(savepath, "article")
-    logdir = os.path.join(savepath, "log")
-    logfile = os.path.join(logdir, time_now() + "_log.txt")
-    os.makedirs(cookiedir, exist_ok=True)
-    os.makedirs(thinkdir, exist_ok=True)
-    os.makedirs(answerdir, exist_ok=True)
-    os.makedirs(articledir, exist_ok=True)
-    os.makedirs(logdir, exist_ok=True)
-    logging = open(logfile, "w", encoding="utf-8")
-    cookie_path = os.path.join(cookiedir, "cookie_zhihu.pkl")
-
+def parse_arguments():
     parser = argparse.ArgumentParser(
         description=r"crawler zhihu.com, 爬取知乎的想法, 回答, 文章, 包括数学公式"
     )
@@ -1575,17 +1568,39 @@ def main():
     parser.add_argument(
         "--target_crawl",
         type=str,
-        help=r"specify the target to crawl, 指定要爬取的用户名",
+        help=r"specify the target to crawl, 指定要爬取的用户名,如: --target_crawl=xxx",
     )
-    target_crawl = args.target_crawl
+    return parser.parse_args()
 
-    global sleeptime, crawl_think, crawl_answer, crawl_article, crawl_links_scratch, addtime, MarkDown_FORMAT
-    args = parser.parse_args()
+def prepare_directories():
+    global driverpath, savepath, cookiedir, thinkdir, answerdir, articledir, logdir, logfile, logging, cookie_path
+    driverpath = os.path.join(abspath, "msedgedriver\msedgedriver.exe")
+    savepath = deepcopy(abspath)
+    cookiedir = os.path.join(savepath, "cookie")
+    thinkdir = os.path.join(savepath, "think")
+    answerdir = os.path.join(savepath, "answer")
+    articledir = os.path.join(savepath, "article")
+    logdir = os.path.join(savepath, "log")
+    logfile = os.path.join(logdir, time_now() + "_log.txt")
+    os.makedirs(cookiedir, exist_ok=True)
+    os.makedirs(thinkdir, exist_ok=True)
+    os.makedirs(answerdir, exist_ok=True)
+    os.makedirs(articledir, exist_ok=True)
+    os.makedirs(logdir, exist_ok=True)
+    logging = open(logfile, "w", encoding="utf-8")
+    cookie_path = os.path.join(cookiedir, "cookie_zhihu.pkl")
+
+def main():
+    prepare_directories()
+
+    args = parse_arguments()
+    global sleeptime, crawl_think, crawl_answer, crawl_article, crawl_links_scratch, target_crawl, addtime, MarkDown_FORMAT
     sleeptime = args.sleep_time
     crawl_think = args.think
     crawl_answer = args.answer
     crawl_article = args.article
     crawl_links_scratch = args.links_scratch
+    target_crawl = args.target_crawl
     addtime = args.computer_time_sleep
     MarkDown_FORMAT = args.MarkDown
 
@@ -1598,7 +1613,10 @@ def main():
     # python crawler.py --article  --MarkDown --links_scratch
     # python crawler.py --answer  --MarkDown --links_scratch
     # python crawler.py --think --answer --article  --MarkDown --links_scratch
-    run_zhihu_crawl()
+    try_login()
+    if not target_crawl:
+        target_crawl = login_user
+    run_zhihu_crawl(target_crawl)
     # try:
     #     crawl_links_scratch = False
     #     zhihu()
