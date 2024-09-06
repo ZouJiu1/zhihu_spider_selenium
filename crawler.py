@@ -82,11 +82,11 @@ def now():
 
 
 def time_now():
-    nowtm = datetime.fromtimestamp(time.time()).isoformat().replace(":", "_")
-    return nowtm
+    current_time = datetime.fromtimestamp(time.time()).isoformat().replace(":", "_")
+    return current_time
 
 
-def edgeopen(driverpath):
+def open_edge(driverpath):
     service = Service(executable_path=driverpath)
     edge_options = EdgeOptions()
 
@@ -164,7 +164,7 @@ def edgeopen(driverpath):
     return driver
 
 
-def login(driver):
+def zhihu_login(driver):
     driver.find_elements(By.CLASS_NAME, "SignFlow-tab")[1].click()
     # driver.find_elements(By.CLASS_NAME, "username-input")[0].send_keys("")
     # driver.find_elements(By.CLASS_NAME, "username-input")[1].send_keys("")
@@ -176,10 +176,11 @@ def login(driver):
 
 def crawl_article_links(driver: webdriver, username: str):
     # crawl articles links
-    base_url = "https://www.zhihu.com/people"
-    articles_link = f"{base_url}/{username}/posts"
-    articles_one = f"{base_url}/{username}/posts?page="
-    # article_detail = r'https://zhuanlan.zhihu.com/p/'
+    articles = f"https://www.zhihu.com/people/{username}/posts"
+    articles_one = f"https://www.zhihu.com/people/{username}/posts?page="
+    article_detail = r"https://zhuanlan.zhihu.com/p/"
+
+    driver.get(articles)
     try:
         WebDriverWait(driver, timeout=10).until(
             lambda d: d.find_element(By.CLASS_NAME, "Pagination")
@@ -228,10 +229,10 @@ def crawl_article_links(driver: webdriver, username: str):
 
 def crawl_answers_links(driver: webdriver, username: str):
     # crawl answers links
-    answer = r"https://www.zhihu.com/people/zoujiu1/answers"
-    answer_one = r"https://www.zhihu.com/people/zoujiu1/answers?page="
+    answer = f"https://www.zhihu.com/people/{username}/answers"
+    answer_one = f"https://www.zhihu.com/people/{username}/answers?page="
 
-    driver.get(answer.replace("zoujiu1", username))
+    driver.get(answer)
     try:
         WebDriverWait(driver, timeout=10).until(
             lambda d: d.find_element(By.CLASS_NAME, "Pagination")
@@ -278,10 +279,10 @@ def crawl_answers_links(driver: webdriver, username: str):
 
 def crawl_think_links(driver: webdriver, username: str):
     # crawl think links
-    think = r"https://www.zhihu.com/people/zoujiu1/pins"
-    think_one = r"https://www.zhihu.com/people/zoujiu1/pins?page="
+    think = f"https://www.zhihu.com/people/{username}/pins"
+    think_one = f"https://www.zhihu.com/people/{username}/pins?page="
 
-    driver.get(think.replace("zoujiu1", username))
+    driver.get(think)
     try:
         WebDriverWait(driver, timeout=10).until(
             lambda d: d.find_element(By.CLASS_NAME, "Pagination")
@@ -445,12 +446,12 @@ def crawl_think_links(driver: webdriver, username: str):
     dealthink(thinkdir)
 
 
-def cleartxt(kkk):
-    while " " in kkk:
-        kkk = kkk.replace(" ", "")
-    while "\n" in kkk:
-        kkk = kkk.replace("\n", "")
-    return kkk
+def clear_txt(input_text):
+    while " " in input_text:
+        input_text = input_text.replace(" ", "")
+    while "\n" in input_text:
+        input_text = input_text.replace("\n", "")
+    return input_text
 
 
 def parser_beautiful(innerHTML, article, number, dircrea, bk=False):
@@ -602,10 +603,11 @@ def parser_beautiful(innerHTML, article, number, dircrea, bk=False):
     return article, number
 
 
-def recursion(nod, article, number, driver, dircrea, bk=False):
+# recursive parse html content
+def parse_html_content(nod, article, number, driver, dircrea, bk=False):
     if isinstance(nod, dict):
         if "nodeName" in nod.keys() and nod["nodeName"] == "#text":
-            kkk = cleartxt(nod["textContent"])
+            kkk = clear_txt(nod["textContent"])
             if len(kkk) > 0:
                 if bk:
                     article += "**"
@@ -625,7 +627,7 @@ def recursion(nod, article, number, driver, dircrea, bk=False):
                     "return arguments[0].childNodes;", nod
                 )
                 for pnode in p_childNodes:
-                    article, number = recursion(
+                    article, number = parse_html_content(
                         pnode, article, number, driver, dircrea, bk
                     )
             except:
@@ -653,7 +655,7 @@ def recursion(nod, article, number, driver, dircrea, bk=False):
                         "return arguments[0].childNodes;", nod
                     )
                     for pnode in p_childNodes:
-                        article, number = recursion(
+                        article, number = parse_html_content(
                             pnode, article, number, driver, dircrea, bk
                         )
             # else:
@@ -677,7 +679,7 @@ def recursion(nod, article, number, driver, dircrea, bk=False):
                     "return arguments[0].childNodes;", nod
                 )
                 for pnode in p_childNodes:
-                    article, number = recursion(
+                    article, number = parse_html_content(
                         pnode, article, number, driver, dircrea, True
                     )
             except:
@@ -698,7 +700,7 @@ def recursion(nod, article, number, driver, dircrea, bk=False):
                 "return arguments[0].childNodes;", nod
             )
             for pnode in p_childNodes:
-                article, number = recursion(
+                article, number = parse_html_content(
                     pnode, article, number, driver, dircrea, bk
                 )
         elif tag_name == "p":
@@ -707,7 +709,7 @@ def recursion(nod, article, number, driver, dircrea, bk=False):
                     "return arguments[0].childNodes;", nod
                 )
                 for pnode in p_childNodes:
-                    article, number = recursion(
+                    article, number = parse_html_content(
                         pnode, article, number, driver, dircrea, bk
                     )
             except:
@@ -724,7 +726,7 @@ def recursion(nod, article, number, driver, dircrea, bk=False):
                     "return arguments[0].childNodes;", nod
                 )
                 for pnode in p_childNodes:
-                    article, number = recursion(
+                    article, number = parse_html_content(
                         pnode, article, number, driver, dircrea, bk
                     )
         elif tag_name == "figure":
@@ -1364,7 +1366,7 @@ def login_loadsavecookie():
     website = r"https://www.zhihu.com/signin"
 
     # login and save cookies of zhihu
-    driver = edgeopen(driverpath)
+    driver = open_edge(driverpath)
     driver.get(website)
     try:
         load_cookie(driver, cookie_path)
@@ -1381,7 +1383,7 @@ def login_loadsavecookie():
             )
         else:
             print("需要登陆并保存cookie，下次就不用登录了。")
-        driver = login(driver)
+        driver = zhihu_login(driver)
         save_cookie(driver, cookie_path)
         driver.quit()
         exit(0)
@@ -1399,7 +1401,8 @@ def login_loadsavecookie():
     return driver, username
 
 
-def downloaddriver():
+# `pip install webdriver-manager`  can make this easier
+def download_driver():
     url = (
         "https://msedgedriver.azureedge.net/116.0.1938.62/edgedriver_win64.zip"
     )
@@ -1451,14 +1454,14 @@ def downloaddriver():
                     break
 
 
-def zhihu():
+def run_zhihu_crawl():
     # #crawl articles links
     try:
-        downloaddriver()
+        download_driver()
         driver, username = login_loadsavecookie()
     except Exception as e:
         os.remove(os.path.join(abspath, "msedgedriver", "msedgedriver.exe"))
-        downloaddriver()
+        download_driver()
         driver, username = login_loadsavecookie()
 
     # #crawl think links
@@ -1582,7 +1585,7 @@ if __name__ == "__main__":
     # python crawler.py --article  --MarkDown --links_scratch
     # python crawler.py --answer  --MarkDown --links_scratch
     # python crawler.py --think --answer --article  --MarkDown --links_scratch
-    zhihu()
+    run_zhihu_crawl()
     # try:
     #     crawl_links_scratch = False
     #     zhihu()
