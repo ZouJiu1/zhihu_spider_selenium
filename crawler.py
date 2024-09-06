@@ -1,5 +1,5 @@
 #################
-###ZouJiu-202306
+###Author: ZouJiu-202306
 #################
 from selenium import webdriver
 from selenium.webdriver.edge.service import Service
@@ -82,7 +82,9 @@ def now():
 
 
 def time_now():
-    current_time = datetime.fromtimestamp(time.time()).isoformat().replace(":", "_")
+    current_time = (
+        datetime.fromtimestamp(time.time()).isoformat().replace(":", "_")
+    )
     return current_time
 
 
@@ -174,6 +176,7 @@ def zhihu_login(driver):
     return driver
 
 
+# simulate page turn in browser to request all article links. like page 1,2,3...
 def crawl_article_links(driver: webdriver, username: str):
     # crawl articles links
     articles = f"https://www.zhihu.com/people/{username}/posts"
@@ -1507,7 +1510,6 @@ def run_zhihu_crawl():
 
     driver.quit()
 
-
 if __name__ == "__main__":
     # version four.one_zero.zero
     driverpath = os.path.join(abspath, "msedgedriver\msedgedriver.exe")
@@ -1597,3 +1599,4 @@ if __name__ == "__main__":
     #         time.sleep(600)
     #         zhihu()
     logfp.close()
+
