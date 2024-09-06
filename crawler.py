@@ -429,7 +429,7 @@ def crawl_think_links(driver: webdriver, username: str):
             crawl_sleep(sleeptime)
             end = now()
             print("爬取一篇想法耗时：", clock, round(end - begin, 3))
-            logfp.write(
+            logging.write(
                 "爬取一篇想法耗时："
                 + clock
                 + " "
@@ -440,7 +440,7 @@ def crawl_think_links(driver: webdriver, username: str):
         # crawlsleep(600)
     allend = now()
     print("平均爬取一篇想法耗时：", round((allend - allbegin) / numberpage, 3))
-    logfp.write(
+    logging.write(
         "平均爬取一篇想法耗时："
         + str(round((allend - allbegin) / numberpage, 3))
         + "\n"
@@ -976,7 +976,7 @@ def crawl_article_detail(driver: webdriver):
 
         end = now()
         print("爬取一篇article耗时：", title, round(end - begin, 3))
-        logfp.write(
+        logging.write(
             "爬取一篇article耗时："
             + title
             + " "
@@ -989,7 +989,7 @@ def crawl_article_detail(driver: webdriver):
     print(
         "平均爬取一篇article耗时：", round((allend - allbegin) / numberpage, 3)
     )
-    logfp.write(
+    logging.write(
         "平均爬取一篇article耗时："
         + str(round((allend - allbegin) / numberpage, 3))
         + "\n"
@@ -1347,7 +1347,7 @@ def crawl_answer_detail(driver: webdriver):
         crawl_sleep(sleeptime)
         end = now()
         print("爬取一篇回答耗时：", title, round(end - begin, 3))
-        logfp.write(
+        logging.write(
             "爬取一篇回答耗时："
             + title
             + " "
@@ -1358,7 +1358,7 @@ def crawl_answer_detail(driver: webdriver):
         # crawlsleep(600)
     allend = now()
     print("平均爬取一篇回答耗时：", round((allend - allbegin) / numberpage, 3))
-    logfp.write(
+    logging.write(
         "平均爬取一篇回答耗时："
         + str(round((allend - allbegin) / numberpage, 3))
         + "\n"
@@ -1470,13 +1470,13 @@ def run_zhihu_crawl():
     # #crawl think links
     if crawl_think:
         crawl_think_links(driver, username)
-        logfp.write(time_now() + ", 想法爬取已经好了的\n")
+        logging.write(time_now() + ", 想法爬取已经好了的\n")
 
     # #crawl articles links
     if crawl_article:
         if not os.path.exists(os.path.join(articledir, "article.txt")):
             crawl_article_links(driver, username)
-            logfp.write(time_now() + ", article weblink爬取已经好了的\n")
+            logging.write(time_now() + ", article weblink爬取已经好了的\n")
         else:
             if crawl_links_scratch:
                 os.rename(
@@ -1484,17 +1484,17 @@ def run_zhihu_crawl():
                     os.path.join(articledir, "article_%s.txt" % time_now()),
                 )
                 crawl_article_links(driver, username)
-                logfp.write(time_now() + ", article weblink爬取已经好了的\n")
+                logging.write(time_now() + ", article weblink爬取已经好了的\n")
             else:
                 pass
         crawl_article_detail(driver)
-        logfp.write(time_now() + ", article爬取已经好了的\n")
+        logging.write(time_now() + ", article爬取已经好了的\n")
 
     # #crawl answers links
     if crawl_answer:
         if not os.path.exists(os.path.join(answerdir, "answers.txt")):
             crawl_answers_links(driver, username)
-            logfp.write(time_now() + ", 回答 weblink爬取已经好了的\n")
+            logging.write(time_now() + ", 回答 weblink爬取已经好了的\n")
         else:
             if crawl_links_scratch:
                 os.rename(
@@ -1502,15 +1502,17 @@ def run_zhihu_crawl():
                     os.path.join(answerdir, "answers_%s.txt" % time_now()),
                 )
                 crawl_answers_links(driver, username)
-                logfp.write(time_now() + ", 回答 weblink爬取已经好了的\n")
+                logging.write(time_now() + ", 回答 weblink爬取已经好了的\n")
             else:
                 pass
         crawl_answer_detail(driver)
-        logfp.write(time_now() + ", 回答爬取已经好了的\n")
+        logging.write(time_now() + ", 回答爬取已经好了的\n")
 
     driver.quit()
 
-if __name__ == "__main__":
+
+def main():
+    global driverpath, savepath, cookiedir, thinkdir, answerdir, articledir, logdir, logfile, logging, cookie_path
     # version four.one_zero.zero
     driverpath = os.path.join(abspath, "msedgedriver\msedgedriver.exe")
     savepath = deepcopy(abspath)
@@ -1525,7 +1527,7 @@ if __name__ == "__main__":
     os.makedirs(answerdir, exist_ok=True)
     os.makedirs(articledir, exist_ok=True)
     os.makedirs(logdir, exist_ok=True)
-    logfp = open(logfile, "w", encoding="utf-8")
+    logging = open(logfile, "w", encoding="utf-8")
     cookie_path = os.path.join(cookiedir, "cookie_zhihu.pkl")
 
     parser = argparse.ArgumentParser(
@@ -1569,6 +1571,15 @@ if __name__ == "__main__":
         action="store_true",
         help=r"crawl links scratch for answer or article, 是否使用已经保存好的website和title, 否则再次爬取website",
     )
+
+    parser.add_argument(
+        "--target_crawl",
+        type=str,
+        help=r"specify the target to crawl, 指定要爬取的用户名",
+    )
+    target_crawl = args.target_crawl
+
+    global sleeptime, crawl_think, crawl_answer, crawl_article, crawl_links_scratch, addtime, MarkDown_FORMAT
     args = parser.parse_args()
     sleeptime = args.sleep_time
     crawl_think = args.think
@@ -1598,5 +1609,8 @@ if __name__ == "__main__":
     #     except:
     #         time.sleep(600)
     #         zhihu()
-    logfp.close()
+    logging.close()
 
+
+if __name__ == "__main__":
+    main()

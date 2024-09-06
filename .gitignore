@@ -167,3 +167,4 @@ cookie/
 # all kinds of drivers: chromedriver,edgedriver ...
 *driver/ 
 log/
+showimg/
