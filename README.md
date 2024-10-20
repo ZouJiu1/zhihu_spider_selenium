@@ -59,7 +59,7 @@ pip install -r .\requirement.txt</code><br>
 ### 1、登录
 运行以下内容，这一步是**手动**操作，需要人工输入账号和密码，然后点击登录就行，登录以后会自动保存好cookie，以后爬取时就不用重复登录了，保存的cookie在这个目录的**cookie**，产生的档案是**cookie_zhihu.pkl**<br>
  <h3><code><b style="color:#7a3e9d;">python crawler.py </b></code></h3>
-<span style="color:#7a3e9d;">运行以后会弹出一个浏览器，自动打开知乎页面以后就可以开始登录，下图所示就是登录页面，两类登录方式都可以，只要能登录就行，<a style="color:black;"><b>点击登录以后，不要再操作页面，键盘或鼠标都不可以，登录时间默认给了130s时间，130秒以后会自动退出，然后查看目录cookie是否保存好cookie_zhihu.pkl，保存好就可以开始爬取了。</b></a></span>
+<span style="color:#7a3e9d;">运行以后会弹出一个浏览器，自动打开知乎页面以后就可以开始登录，下图所示就是登录页面，两类登录方式都可以，只要能登录就行，<a style="color:black;"><b>点击登录以后，不要再操作页面，键盘或鼠标都不可以，登录以后查看目录cookie是否保存好cookie_zhihu.pkl，保存好就会开始爬取了。</b></a></span>
 <br>
 <img src="./showimg/login.png" width="29%"/>
 
