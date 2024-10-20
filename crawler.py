@@ -878,6 +878,7 @@ def crawl_answer_detail(driver:webdriver):
                             break
                 if kkk > 0:
                     break
+        kkk = -9
         if kkk > 0:
             continue
         
@@ -984,6 +985,9 @@ def crawl_answer_detail(driver:webdriver):
 
             article = article.replace("修改\n", "").replace("开启赞赏\n", "开启赞赏, ").replace("添加评论\n", "").replace("分享\n", "").\
                 replace("收藏\n", "").replace("设置\n", "")
+            voteup = driver.find_element(By.CLASS_NAME, "VoteButton--up").text
+            Comment = driver.find_element(By.CLASS_NAME, "QuestionHeader-Comment").text
+            article += f"\n\n 赞同数：{voteup}，评论数：{Comment}\n"
 
             url = driver.current_url
             article += "<br>\n\n["+url+"](" + url + ")<br>\n"
@@ -1194,9 +1198,9 @@ if __name__ == "__main__":
     
     # crawl_think = True
     # crawl_article = True
-    # crawl_answer = True
+    crawl_answer = True
     # crawl_links_scratch = True
-    # MarkDown_FORMAT = True
+    MarkDown_FORMAT = True
     # python crawler.py --think --MarkDown --links_scratch
     # python crawler.py --article  --MarkDown --links_scratch
     # python crawler.py --answer  --MarkDown --links_scratch
