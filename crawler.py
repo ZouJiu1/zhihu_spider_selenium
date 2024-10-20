@@ -128,11 +128,23 @@ def edgeopen(driverpath):
 
 
 def login(driver):
-    driver.find_elements(By.CLASS_NAME, "SignFlow-tab")[1].click()
+    driver.get(r"https://www.zhihu.com/")
+    try:
+        driver.find_elements(By.CLASS_NAME, "SignFlow-tab")[1].click()
+    except:
+        pass
+    toggle = []
+    ti = 1
+    while toggle==[] and ti < 600:
+        toggle = driver.find_elements(By.ID, 'Popover15-toggle')
+        time.sleep(3)
+        if ti%10==0:
+            print("等待输入账号并点击登录，登录以后请不要执行任何操作.........")
+        ti += 3
     # driver.find_elements(By.CLASS_NAME, "username-input")[0].send_keys("")
     # driver.find_elements(By.CLASS_NAME, "username-input")[1].send_keys("")
     # driver.find_element(By.CLASS_NAME, "SignFlow-submitButton").click()
-    time.sleep(130)
+    # time.sleep(130)
     # WebDriverWait(driver, timeout=60).until(lambda d:d.find_element(By.CLASS_NAME, "TopstoryTabs-link"))
     return driver
 
@@ -1004,12 +1016,7 @@ def crawl_answer_detail(driver:webdriver):
     print("平均爬取一篇回答耗时：", round((allend - allbegin) / numberpage, 3))
     logfp.write("平均爬取一篇回答耗时：" + str(round((allend - allbegin) / numberpage, 3)) + "\n")
 
-def login_loadsavecookie():
-    website = r"https://www.zhihu.com/signin"
-    
-    #login and save cookies of zhihu
-    driver = edgeopen(driverpath)
-    driver.get(website)
+def login_loadsavecookie(driver):
     try:
         load_cookie(driver, cookie_path)
         driver.get(r"https://www.zhihu.com/")
@@ -1023,8 +1030,10 @@ def login_loadsavecookie():
             print("需要登陆并保存cookie，下次就不用登录了。")
         driver = login(driver)
         save_cookie(driver, cookie_path)
-        driver.quit()
-        exit(0)
+        print(f"cookie保存好了的放在了：{cookie_path}")
+        crawlsleep(3)
+        # driver.quit()
+        # exit(0)
     try:
         driver.find_element(By.ID, 'Popover15-toggle').click()
         driver.find_element(By.CLASS_NAME, 'Menu-item').click()
@@ -1039,6 +1048,7 @@ def login_loadsavecookie():
     return driver, username
 
 def downloaddriver():
+    global driverpath
     url = "https://msedgedriver.azureedge.net/116.0.1938.62/edgedriver_win64.zip"
     if not os.path.exists(driverpath):
         ret = requests.get("https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver/")
@@ -1076,15 +1086,28 @@ def downloaddriver():
                 if kk < 0:
                     break
 
+def openEdge():
+    global driverpath
+    website = r"https://www.zhihu.com/signin"
+        
+    # login and save cookies of zhihu
+    driver = edgeopen(driverpath)
+    driver.get(website)
+    return driver
+
 def zhihu():
+    global driverpath
     # #crawl articles links
     try:
         downloaddriver()
-        driver, username = login_loadsavecookie()
+        driver = openEdge()
     except Exception as e:
-        os.remove(os.path.join(abspath, 'msedgedriver', "msedgedriver.exe"))
+        if os.path.exists(driverpath):
+            os.remove(driverpath)
         downloaddriver()
-        driver, username = login_loadsavecookie()
+        driver = openEdge()
+
+    driver, username = login_loadsavecookie(driver)
     
     # #crawl think links
     if crawl_think:
@@ -1174,14 +1197,9 @@ if __name__ == "__main__":
     # python crawler.py --answer  --MarkDown --links_scratch
     # python crawler.py --think --answer --article  --MarkDown --links_scratch
     zhihu()
-    # try:
-    #     crawl_links_scratch = False
-    #     zhihu()
-    # except:
-    #     time.sleep(600)
+    # for i in range(100):
     #     try:
     #         zhihu()
     #     except:
-    #         time.sleep(600)
-    #         zhihu()
+    #         crawlsleep(60)
     logfp.close()
