@@ -27,6 +27,7 @@ from selenium.webdriver.support import expected_conditions as EC
 import base64
 from zipfile import ZipFile
 from bs4 import BeautifulSoup
+import re
 
 abspath = os.path.abspath(__file__)
 filename = abspath.split(os.sep)[-1]
@@ -362,7 +363,9 @@ def parser_beautiful(innerHTML, article, number, dircrea, bk=False):
         article += innerHTML.text
         return article, number
 
-    for chi in innerHTML.children:
+    inname = innerHTML.name
+    allchild = [i for i in innerHTML.children]
+    for idk, chi in enumerate(innerHTML.children):
         # article, number = parser_beautiful(chi, article, number, dircrea, bk)
         tag_name = chi.name
         if isinstance(chi, str):
@@ -370,13 +373,38 @@ def parser_beautiful(innerHTML, article, number, dircrea, bk=False):
             continue
         else:
             cll = [c for c in chi.children]
-        if tag_name in ['table', 'tbody', 'tr', 'td', 'u', 'em']:
+        # if tag_name in ['table', 'tbody', 'tr', 'td', 'u', 'em']:
+        if tag_name in ['table', 'tbody', 'tr', 'td', 'u', "article", 'pre', 'ul']:
             article, number = parser_beautiful(chi, article, number, dircrea, bk)
+        elif tag_name=="li":
+            # article += "\n* "
+            art, _ = parser_beautiful(chi, "", 0, dircrea, bk)
+            article += "\n* "+art + "\n"
+        elif tag_name=="em":
+            article += " *" + chi.text + "* "
         elif tag_name=="br":
             article += "\n"
         elif tag_name=="blockquote":
-            art, number = parser_beautiful(chi, "", number, dircrea, bk)
-            article += "<blockquote>\n" + art + "\n</blockquote>\n"
+            if len(cll) > 1:
+                art, _ = parser_beautiful(chi, "", 0, dircrea, True)
+                art = re.sub(r'\n\n+', '\n', art)
+                article += '\n>'+art+'\n'
+            else:
+                article += "\n>" + chi.text + "\n"
+        elif tag_name=="br":
+            if inname=="p" and tag_name=='br':
+                kk = list(innerHTML.children)
+                if len(kk) >= 2 and kk[1].name=='a':
+                    linksite = None
+                    title = None
+                    if 'href' in kk[1].attrs.keys():
+                        linksite = kk[1].attrs['href']
+                    if 'title' in kk[1].attrs.keys():
+                        title = kk[1].attrs['title']
+                    if linksite and title:
+                        article += f'[{title}]({linksite})\n\n'
+                    break
+            article += "\n"
         elif tag_name=="p":
             article, number = parser_beautiful(chi, article, number, dircrea, bk)
             article += "\n\n"
@@ -415,15 +443,19 @@ def parser_beautiful(innerHTML, article, number, dircrea, bk=False):
                 linksite = chi.attrs['href']
             if linksite:
                 linksite = linksite.replace("//link.zhihu.com/?target=https%3A", "").replace("//link.zhihu.com/?target=http%3A", "")
+                ar, _ = parser_beautiful(chi, "", 0, dircrea, False)
                 if len(article) > 0 and article[-1]=='\n':
-                    article += "["+chi.text+"]"+"("+linksite + ")"
+                    article += "["+ar+"]"+"("+linksite + ")"
                 elif len(article) > 0 and article[-1] not in ['\n', ' ']:
-                    article += " ["+chi.text+"]"+"("+linksite + ")"
+                    article += " ["+ar+"]"+"("+linksite + ")"
                 else:
-                    article += "\n\n["+chi.text+"]"+"("+linksite + ")"
+                    article += "\n\n["+ar+"]"+"("+linksite + ")"
+            if idk!=len(allchild)-1 and allchild[idk+1].name=='a':
+                article += '\n\n'
         elif tag_name=='b' or tag_name=='strong':
             if len(cll) > 1:
-                article, number = parser_beautiful(chi, article, number, dircrea, True)
+                art, _ = parser_beautiful(chi, "", 0, dircrea, False)
+                article += "**" + art + "**"
             else:
                 txt = chi.text
                 while len(txt) > 0 and txt[-1] == " ":
