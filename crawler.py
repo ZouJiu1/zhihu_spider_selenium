@@ -878,7 +878,6 @@ def crawl_answer_detail(driver:webdriver):
                             break
                 if kkk > 0:
                     break
-        kkk = -9
         if kkk > 0:
             continue
         
