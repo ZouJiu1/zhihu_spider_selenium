@@ -139,8 +139,13 @@ def login(driver):
         toggle = driver.find_elements(By.ID, 'Popover15-toggle')
         time.sleep(3)
         if ti%10==0:
-            print("等待输入账号并点击登录，登录以后请不要执行任何操作.........")
+            print("等待输入账号并点击登录，登录以后请不要执行任何操作，10分钟后自动退出.........")
         ti += 3
+    toggle = driver.find_elements(By.ID, 'Popover15-toggle')
+    if toggle==[]:
+        print("还没有登陆的，还请登录保存cookie.......")
+        driver.quit()
+        exit(0)
     # driver.find_elements(By.CLASS_NAME, "username-input")[0].send_keys("")
     # driver.find_elements(By.CLASS_NAME, "username-input")[1].send_keys("")
     # driver.find_element(By.CLASS_NAME, "SignFlow-submitButton").click()
