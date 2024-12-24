@@ -28,6 +28,7 @@ import base64
 from zipfile import ZipFile
 from bs4 import BeautifulSoup
 import re
+import platform
 
 abspath = os.path.abspath(__file__)
 filename = abspath.split(os.sep)[-1]
@@ -280,6 +281,7 @@ def crawl_think_links(driver:webdriver, username:str):
             clock = clock[3 + 1:].replace(":", "_")
             dirthink = os.path.join(thinkdir, clock)
             if os.path.exists(dirthink):
+                print(f"{dirthink}已经爬取过了，不再重复爬取")
                 continue
             os.makedirs(dirthink, exist_ok=True)
             try:
@@ -357,8 +359,8 @@ def cleartxt(kkk):
 def parser_beautiful(innerHTML, article, number, dircrea, bk=False):
     if not innerHTML:
         return article, number
-    if bk:
-        article += "**"
+    # if bk:
+    #     article += "**"
     if isinstance(innerHTML, str):
         article += innerHTML.text
         return article, number
@@ -504,8 +506,8 @@ def parser_beautiful(innerHTML, article, number, dircrea, bk=False):
             else:
                 article, number = parser_beautiful(chi, article, number, dircrea, bk)
                 article += "\n\n"
-    if bk:
-        article += "**"
+    # if bk:
+    #     article += "**"
     article = article.replace("\n\n\n\n\n", "\n\n")
     article = article.replace("\n\n\n\n", "\n\n")
     article = article.replace("\n\n\n", "\n\n")
@@ -694,6 +696,7 @@ def crawl_article_detail(driver:webdriver):
                 if kkk > 0:
                     break
         if kkk > 0:
+            print(f"{os.path.join(dircol, j)}已经爬取过了，不再重复爬取")
             continue
         dircrea  = os.path.join(articledir, temp_name)
         os.makedirs(dircrea, exist_ok = True)
@@ -911,6 +914,7 @@ def crawl_answer_detail(driver:webdriver):
                 if kkk > 0:
                     break
         if kkk > 0:
+            print(f"{os.path.join(dircol, j)}已经爬取过了，不再重复爬取")
             continue
         
         dircrea  = os.path.join(answerdir, temp_name)
@@ -1097,14 +1101,26 @@ def downloaddriver():
         ret = BeautifulSoup(ret.content, 'html.parser')
         # divall = ret.find_all('div', class_=r'common-card--lightblue')
         ddl = ret.find_all('a')
+        name = "msedgedriver.exe"
         for k in ddl:
             key = k.attrs.keys()
             if 'href' not in key:
                 continue
             href = k.attrs['href']
-            if 'href' in key and "win64" in href and ".zip" in href:
-                url = href
-                break
+            if 'darwin' not in sys.platform:
+                if 'href' in key and "win64" in href and ".zip" in href:
+                    url = href
+                    break
+            elif 'darwin' in sys.platform and 'arm' not in platform.processor():
+                if 'href' in key and "mac64" in href and "m1" not in href and ".zip" in href:
+                    url = href
+                    name = "msedgedriver"
+                    break
+            elif 'darwin' in sys.platform and 'arm' in platform.processor():
+                if 'href' in key and "mac64_m1" in href and ".zip" in href:
+                    url = href
+                    name = "msedgedriver"
+                    break
         response = requests.get(url)
         if response.status_code==200:
             with open(os.path.join(abspath, 'msedgedriver/edgedriver.zip'), 'wb') as obj:
@@ -1115,12 +1131,15 @@ def downloaddriver():
             for r, d, f in os.walk(nth):
                 kk = 6
                 for i in f:
-                    if 'driver' in i and '.exe' in i:
+                    if 'driver' in i and '.zip' not in i:
                         try:
                             shutil.move(os.path.join(r, i), os.path.join(nth, i))
                         except:
                             pass
-                        os.rename(os.path.join(nth, i), os.path.join(nth, "msedgedriver.exe"))
+                        os.rename(os.path.join(nth, i), os.path.join(nth, name))
+                        if 'darwin' in sys.platform:
+                            print(f"\n\n请执行权限操作再继续执行：\nchmod +x {os.path.join(nth, name)}\n")
+                            exit(0)
                         kk = -6
                         break
                 if kk < 0:
@@ -1188,7 +1207,10 @@ def zhihu():
 
 if __name__ == "__main__":
     #version four.one_zero.zero
-    driverpath = os.path.join(abspath, 'msedgedriver\msedgedriver.exe')
+    if 'darwin' not in sys.platform:
+        driverpath = os.path.join(abspath, 'msedgedriver' +os.sep + 'msedgedriver.exe')
+    else:
+        driverpath = os.path.join(abspath, 'msedgedriver' +os.sep + 'msedgedriver')
     savepath = deepcopy(abspath)
     cookiedir = os.path.join(savepath, 'cookie')
     thinkdir = os.path.join(savepath, 'think')
