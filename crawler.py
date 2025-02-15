@@ -156,12 +156,15 @@ def login(driver):
     return driver
 
 def crawl_article_links(driver:webdriver, username:str):
+    if not username:
+        raise ValueError("用户名不能为空")
+        
     #crawl articles links
-    articles = r'https://www.zhihu.com/people/zoujiu1/posts'
-    articles_one = r'https://www.zhihu.com/people/zoujiu1/posts?page='
+    articles = f'https://www.zhihu.com/people/{username}/posts'
+    articles_one = f'https://www.zhihu.com/people/{username}/posts?page='
     article_detail = r'https://zhuanlan.zhihu.com/p/'
 
-    driver.get(articles.replace("zoujiu1", username))
+    driver.get(articles)
     try:
         WebDriverWait(driver, timeout=10).until(lambda d: d.find_element(By.CLASS_NAME, "Pagination"))
         pages = driver.find_elements(By.CLASS_NAME, 'PaginationButton')[-2]
@@ -197,10 +200,10 @@ def crawl_article_links(driver:webdriver, username:str):
 
 def crawl_answers_links(driver:webdriver, username:str):
     #crawl answers links
-    answer = r'https://www.zhihu.com/people/zoujiu1/answers'
-    answer_one = r'https://www.zhihu.com/people/zoujiu1/answers?page='
+    answer = f'https://www.zhihu.com/people/{username}/answers'
+    answer_one = f'https://www.zhihu.com/people/{username}/answers?page='
 
-    driver.get(answer.replace("zoujiu1", username))
+    driver.get(answer)
     try:
         WebDriverWait(driver, timeout=10).until(lambda d: d.find_element(By.CLASS_NAME, "Pagination"))
         pages = driver.find_elements(By.CLASS_NAME, 'PaginationButton')[-2]
@@ -236,10 +239,10 @@ def crawl_answers_links(driver:webdriver, username:str):
 
 def crawl_think_links(driver:webdriver, username:str):
     #crawl think links
-    think = r'https://www.zhihu.com/people/zoujiu1/pins'
-    think_one = r'https://www.zhihu.com/people/zoujiu1/pins?page='
+    think = f'https://www.zhihu.com/people/{username}/pins'
+    think_one = f'https://www.zhihu.com/people/{username}/pins?page='
 
-    driver.get(think.replace("zoujiu1", username))
+    driver.get(think)
     try:
         WebDriverWait(driver, timeout=10).until(lambda d: d.find_element(By.CLASS_NAME, "Pagination"))
         pages = driver.find_elements(By.CLASS_NAME, 'PaginationButton')[-2]
