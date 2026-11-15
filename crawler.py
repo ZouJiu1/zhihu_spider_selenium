@@ -1166,6 +1166,8 @@ def zhihu():
         downloaddriver()
         driver = openEdge()
     except Exception as e:
+        print(e)
+        exit(-1)
         if os.path.exists(driverpath):
             os.remove(driverpath)
         downloaddriver()
